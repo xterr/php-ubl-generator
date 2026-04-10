@@ -6,6 +6,7 @@ parameters:
         analyseAndScan:
             - src/Emitter/
             - src/Command/
+    treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         - '#Access to an undefined property object::\$#'

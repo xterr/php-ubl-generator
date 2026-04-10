@@ -201,7 +201,7 @@ final class UblGenerator
             $enumName = $this->namingResolver->toClassName($name);
             $writer->write(
                 $this->config->enumNamespace . '/' . $enumName . '.php',
-                $enumEmitter->emit($enumName, $values, $this->extractDocumentation($simpleType)),
+                $enumEmitter->emit($enumName, array_values($values), $this->extractDocumentation($simpleType)),
             );
             $enumCount++;
         }

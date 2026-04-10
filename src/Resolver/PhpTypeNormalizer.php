@@ -23,7 +23,10 @@ final class PhpTypeNormalizer
         return '\\' . $type;
     }
 
-    /** @param array<string, string> $map */
+    /**
+     * @param array<string, string> $map
+     * @return array<string, string>
+     */
     public static function normalizeMap(array $map): array
     {
         return array_map(self::normalize(...), $map);

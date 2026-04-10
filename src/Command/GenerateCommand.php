@@ -85,7 +85,6 @@ final class GenerateCommand extends Command
             $io->text('  ' . $stage . '...');
         });
 
-        // TODO: Wire emitters to actually write files when ClassEmitter integration is complete
         $io->section('Generation Result');
         $io->success($result->summary());
 

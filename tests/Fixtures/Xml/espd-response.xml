@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QualificationApplicationResponse xmlns="urn:oasis:names:specification:ubl:schema:xsd:QualificationApplicationResponse-2"
+         xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:UBLVersionID>2.3</cbc:UBLVersionID>
+  <cbc:CustomizationID>urn:www.cenbii.eu:transaction:biitrdm092:ver3.0</cbc:CustomizationID>
+  <cbc:ProfileExecutionID schemeAgencyID="OP" schemeVersionID="4.1.0">ESPD-EDMv4.1.0</cbc:ProfileExecutionID>
+  <cbc:ID schemeAgencyID="DGPE">ESPD-RES-001</cbc:ID>
+  <cbc:IssueDate>2025-01-20</cbc:IssueDate>
+  <cbc:IssueTime>14:00:00</cbc:IssueTime>
+  <cbc:ContractFolderID>PROC-2025-001</cbc:ContractFolderID>
+  <cac:ContractingParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeAgencyID="EU-COM-GROW">CA-0001</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>Contracting Authority Example</cbc:Name>
+      </cac:PartyName>
+    </cac:Party>
+  </cac:ContractingParty>
+  <cac:EconomicOperatorParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeAgencyID="EU-COM-GROW">EO-0001</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>Economic Operator Ltd</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Industriestrasse 42</cbc:StreetName>
+        <cbc:CityName>Berlin</cbc:CityName>
+        <cbc:PostalZone>10115</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode listID="CountryCodeIdentifier" listAgencyID="ISO" listVersionID="1.0">DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+    </cac:Party>
+  </cac:EconomicOperatorParty>
+  <cac:TenderingCriterion>
+    <cbc:ID>005eb9ed-1347-4ca3-bb29-9bc0db64e1ab</cbc:ID>
+    <cbc:CriterionTypeCode listID="CriteriaTypeCode" listAgencyID="OP">CRITERION.EXCLUSION.CONVICTIONS.PARTICIPATION_IN_CRIMINAL_ORGANISATION</cbc:CriterionTypeCode>
+    <cbc:Name>Participation in a criminal organisation</cbc:Name>
+    <cbc:Description>Has the economic operator been the subject of a conviction by final judgment for participation in a criminal organisation?</cbc:Description>
+    <cac:TenderingCriterionPropertyGroup>
+      <cbc:ID>7c637c0c-7703-4389-ba52-02997a055bd7</cbc:ID>
+      <cbc:PropertyGroupTypeCode listID="PropertyGroupType" listAgencyID="OP">ON*</cbc:PropertyGroupTypeCode>
+      <cac:TenderingCriterionProperty>
+        <cbc:ID>974c8196-9d1c-419c-9ca9-45bb9f5fd59a</cbc:ID>
+        <cbc:Description>Your answer?</cbc:Description>
+        <cbc:TypeCode listID="CriterionElementType" listAgencyID="OP">QUESTION</cbc:TypeCode>
+        <cbc:ValueDataTypeCode listID="ResponseDataType" listAgencyID="OP">INDICATOR</cbc:ValueDataTypeCode>
+      </cac:TenderingCriterionProperty>
+    </cac:TenderingCriterionPropertyGroup>
+  </cac:TenderingCriterion>
+  <cac:TenderingCriterionResponse>
+    <cbc:ID>resp-001</cbc:ID>
+    <cbc:ValidatedCriterionPropertyID>974c8196-9d1c-419c-9ca9-45bb9f5fd59a</cbc:ValidatedCriterionPropertyID>
+    <cac:ResponseValue>
+      <cbc:ID>val-001</cbc:ID>
+      <cbc:ResponseIndicator>false</cbc:ResponseIndicator>
+    </cac:ResponseValue>
+  </cac:TenderingCriterionResponse>
+</QualificationApplicationResponse>

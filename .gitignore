@@ -10,10 +10,6 @@ composer.lock
 # Vendored XSD schemas — downloaded by users, not shipped in the repo
 resources/schemas/
 
-# Runtime package (xterr/php-ubl) — lives in a separate repo
-# Kept locally via autoload for development until the runtime package is published
-runtime/
-
 # Generated UBL classes — never commit, always regenerate
 src/Cac/
 src/Cbc/

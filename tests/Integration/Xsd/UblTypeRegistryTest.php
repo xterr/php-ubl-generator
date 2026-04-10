@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Xterr\UBL\Tests\Integration\Xsd;
+namespace Xterr\UBL\Generator\Tests\Integration\Xsd;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

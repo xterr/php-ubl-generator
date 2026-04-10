@@ -20,13 +20,5 @@
         <include>
             <directory>src</directory>
         </include>
-        <exclude>
-            <directory>src/Cbc</directory>
-            <directory>src/Cac</directory>
-            <directory>src/Doc</directory>
-            <directory>src/Enum</directory>
-            <file>src/Xml/DocumentRegistry.php</file>
-            <file>src/Xml/TypeMap.php</file>
-        </exclude>
     </source>
 </phpunit>
