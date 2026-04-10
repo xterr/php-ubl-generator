@@ -3,8 +3,13 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   targetNamespace="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
   xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+  xmlns:udt="urn:oasis:names:specification:bdndr:schema:xsd:UnqualifiedDataTypes-1"
   elementFormDefault="qualified" attributeFormDefault="unqualified">
 
+  <xsd:import namespace="urn:oasis:names:specification:bdndr:schema:xsd:UnqualifiedDataTypes-1"
+    schemaLocation="UBL-UnqualifiedDataTypes.xsd"/>
+
+  <!-- === Aggregate types (sequence) === -->
   <xsd:element name="UBLExtensions" type="ext:UBLExtensionsType"/>
 
   <xsd:complexType name="UBLExtensionsType">
@@ -26,5 +31,24 @@
       <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
+
+  <!-- === Leaf types (simpleContent) — structurally identical to CBC elements === -->
+  <xsd:element name="ExtensionAgencyID" type="ext:ExtensionAgencyIDType"/>
+  <xsd:complexType name="ExtensionAgencyIDType"><xsd:simpleContent><xsd:extension base="udt:IdentifierType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="ExtensionAgencyName" type="ext:ExtensionAgencyNameType"/>
+  <xsd:complexType name="ExtensionAgencyNameType"><xsd:simpleContent><xsd:extension base="udt:TextType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="ExtensionReasonCode" type="ext:ExtensionReasonCodeType"/>
+  <xsd:complexType name="ExtensionReasonCodeType"><xsd:simpleContent><xsd:extension base="udt:CodeType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="ExtensionReason" type="ext:ExtensionReasonType"/>
+  <xsd:complexType name="ExtensionReasonType"><xsd:simpleContent><xsd:extension base="udt:TextType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="ExtensionURI" type="ext:ExtensionURIType"/>
+  <xsd:complexType name="ExtensionURIType"><xsd:simpleContent><xsd:extension base="udt:IdentifierType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="ExtensionVersionID" type="ext:ExtensionVersionIDType"/>
+  <xsd:complexType name="ExtensionVersionIDType"><xsd:simpleContent><xsd:extension base="udt:IdentifierType"/></xsd:simpleContent></xsd:complexType>
 
 </xsd:schema>

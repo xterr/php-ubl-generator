@@ -10,6 +10,7 @@ use GoetasWebservices\XML\XSDReader\Schema\Type\ComplexTypeSimpleContent;
 use GoetasWebservices\XML\XSDReader\Schema\Type\SimpleType;
 use GoetasWebservices\XML\XSDReader\Schema\Type\Type;
 use Symfony\Component\Yaml\Yaml;
+use Xterr\UBL\Generator\Xsd\UblTypeRegistry;
 use Xterr\UBL\Xml\Mapping\XmlNamespace;
 
 final class TypeResolver
@@ -39,8 +40,11 @@ final class TypeResolver
         $isNullable = $min === 0;
         $isArray = $max > 1 || $max === -1;
 
-        if ($xmlNamespace === XmlNamespace::CBC) {
-            return $this->resolveCbcElement($xmlName, $xmlNamespace, $isNullable, $isArray, $choiceGroup);
+        if (\in_array($xmlNamespace, UblTypeRegistry::COMPONENT_NAMESPACES, true)) {
+            $phpType = $this->cbcTypeResolver->phpTypeForElement($xmlName);
+            if ($phpType !== null) {
+                return $this->resolveCbcElement($xmlName, $xmlNamespace, $isNullable, $isArray, $choiceGroup);
+            }
         }
 
         $type = $elementSingle->getType();

@@ -173,4 +173,52 @@ final class CbcTypeResolverTest extends TestCase
         self::assertNotContains('UBLExtension', $classNames);
         self::assertNotContains('ExtensionContent', $classNames);
     }
+
+    #[Test]
+    public function extLeafElementCollapsesToExistingLeafType(): void
+    {
+        // ExtensionAgencyID extends udt:IdentifierType → same base as cbc:ID → must map to 'Identifier'
+        $phpType = self::$resolver->phpTypeForElement('ExtensionAgencyID');
+
+        self::assertSame('Identifier', $phpType);
+    }
+
+    #[Test]
+    public function extTextLeafElementCollapsesToText(): void
+    {
+        $phpType = self::$resolver->phpTypeForElement('ExtensionReason');
+
+        self::assertSame('Text', $phpType);
+    }
+
+    #[Test]
+    public function extCodeLeafElementCollapsesToCode(): void
+    {
+        $phpType = self::$resolver->phpTypeForElement('ExtensionReasonCode');
+
+        self::assertSame('Code', $phpType);
+    }
+
+    #[Test]
+    public function extLeafElementSharesLeafTypeWithCbcCounterpart(): void
+    {
+        // ExtensionAgencyID and cbc:ID both extend udt:IdentifierType → same ResolvedLeafType
+        $extLeaf = self::$resolver->leafTypeForElement('ExtensionAgencyID');
+        $cbcLeaf = self::$resolver->leafTypeForElement('ID');
+
+        self::assertNotNull($extLeaf);
+        self::assertNotNull($cbcLeaf);
+        self::assertSame($extLeaf, $cbcLeaf);
+        self::assertSame('Identifier', $extLeaf->className);
+    }
+
+    #[Test]
+    public function extLeafElementNamesIncludedInLeafType(): void
+    {
+        $identifierLeaf = self::$resolver->leafTypeForElement('ExtensionAgencyID');
+
+        self::assertNotNull($identifierLeaf);
+        self::assertContains('ExtensionAgencyID', $identifierLeaf->cbcElementNames);
+        self::assertContains('ID', $identifierLeaf->cbcElementNames);
+    }
 }

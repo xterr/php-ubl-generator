@@ -69,9 +69,45 @@ final class FullGenerationTest extends TestCase
             + self::$result->cacClassCount
             + self::$result->docClassCount
             + self::$result->enumCount
+            + self::$result->codelistEnumCount
             + 2;
 
         self::assertSame($expected, self::$result->totalFilesWritten);
+    }
+
+    #[Test]
+    public function extAggregateClassesLandInCac(): void
+    {
+        // EXT complex types with child elements go to Cac/, not Cbc/
+        self::assertFileExists(self::$tempDir . '/Cac/UBLExtensions.php');
+        self::assertFileExists(self::$tempDir . '/Cac/UBLExtension.php');
+        self::assertFileDoesNotExist(self::$tempDir . '/Cbc/UBLExtensions.php');
+        self::assertFileDoesNotExist(self::$tempDir . '/Cbc/UBLExtension.php');
+    }
+
+    #[Test]
+    public function extLeafElementsCollapseIntoExistingCbcClasses(): void
+    {
+        // EXT simpleContent elements (ExtensionAgencyID, etc.) share the same UDT base
+        // as CBC elements — they must NOT generate standalone classes
+        self::assertFileDoesNotExist(self::$tempDir . '/Cbc/ExtensionAgencyID.php');
+        self::assertFileDoesNotExist(self::$tempDir . '/Cbc/ExtensionAgencyName.php');
+        self::assertFileDoesNotExist(self::$tempDir . '/Cbc/ExtensionReasonCode.php');
+        self::assertFileDoesNotExist(self::$tempDir . '/Cbc/ExtensionReason.php');
+        self::assertFileDoesNotExist(self::$tempDir . '/Cbc/ExtensionURI.php');
+        self::assertFileDoesNotExist(self::$tempDir . '/Cbc/ExtensionVersionID.php');
+
+        // They should resolve to existing leaf classes that ARE generated
+        self::assertFileExists(self::$tempDir . '/Cbc/Identifier.php');
+        self::assertFileExists(self::$tempDir . '/Cbc/Text.php');
+        self::assertFileExists(self::$tempDir . '/Cbc/Code.php');
+    }
+
+    #[Test]
+    public function generatedExtAggregateClassIsSyntacticallyValid(): void
+    {
+        $this->assertPhpSyntaxValid(self::$tempDir . '/Cac/UBLExtensions.php');
+        $this->assertPhpSyntaxValid(self::$tempDir . '/Cac/UBLExtension.php');
     }
 
     #[Test]
