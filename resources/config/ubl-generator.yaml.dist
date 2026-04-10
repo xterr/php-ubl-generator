@@ -1,0 +1,53 @@
+# UBL Code Generator Configuration
+# Copy this file to ubl-generator.yaml in your project root and customize.
+
+# UBL schema version to generate from (2.1, 2.2, 2.3, 2.4)
+schema_version: '2.4'
+
+# Path to XSD schemas directory (null = use bundled schemas)
+schema_dir: ~
+
+# Output directory for generated PHP classes
+output_dir: 'src'
+
+# Root PHP namespace for generated classes
+namespace: 'Xterr\UBL'
+
+# Sub-namespace names for each UBL component category
+namespaces:
+  cbc: 'Cbc'
+  cac: 'Cac'
+  doc: 'Doc'
+  enum: 'Enum'
+
+# Glob patterns to include specific XSD types (empty = include all)
+# Example: ['QualificationApplication*', 'TenderingCriterion*', 'Address*', 'Party*']
+include: []
+
+# Glob patterns to exclude specific XSD types (exclude takes priority over include)
+# Example: ['*SignatureType', '*XAdES*']
+exclude: []
+
+# XSD type to PHP type overrides
+# Example: { 'xsd:decimal': 'float' }
+type_overrides: {}
+
+# XSD type name to PHP class name overrides
+# Example: { 'QualificationApplicationRequest': 'EspdRequest' }
+class_name_overrides: {}
+
+# XSD element name to PHP property name overrides
+# Example: { 'UBLVersionID': 'ublVersion' }
+property_name_overrides: {}
+
+# Include XSD <xsd:documentation> text in generated PHPDoc
+include_documentation: true
+
+# Generate inline setter validation rules (type checks, pattern, enumeration, etc.)
+generate_validation: true
+
+# Generate symfony/validator #[Assert\*] attributes (requires symfony/validator installed)
+generate_validator_attributes: false
+
+# Include @generated tag in class PHPDoc
+include_generated_tag: true

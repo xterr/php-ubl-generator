@@ -1,0 +1,70 @@
+# XSD to PHP Type Mapping
+# Used by TypeResolver to determine PHP types for XSD primitives
+# Can be overridden in ubl-generator.yaml via type_overrides
+
+types:
+  # Strings
+  'xsd:string': 'string'
+  'xsd:normalizedString': 'string'
+  'xsd:token': 'string'
+  'xsd:language': 'string'
+  'xsd:Name': 'string'
+  'xsd:NCName': 'string'
+  'xsd:NMTOKEN': 'string'
+  'xsd:NMTOKENS': 'string'
+  'xsd:ID': 'string'
+  'xsd:IDREF': 'string'
+  'xsd:IDREFS': 'string'
+  'xsd:ENTITY': 'string'
+  'xsd:ENTITIES': 'string'
+  'xsd:NOTATION': 'string'
+  'xsd:anyURI': 'string'
+  'xsd:QName': 'string'
+  'xsd:anyType': 'string'
+  'xsd:anySimpleType': 'string'
+
+  # Boolean
+  'xsd:boolean': 'bool'
+
+  # Integer types
+  'xsd:integer': 'int'
+  'xsd:int': 'int'
+  'xsd:long': 'int'
+  'xsd:short': 'int'
+  'xsd:byte': 'int'
+  'xsd:positiveInteger': 'int'
+  'xsd:nonPositiveInteger': 'int'
+  'xsd:negativeInteger': 'int'
+  'xsd:nonNegativeInteger': 'int'
+  'xsd:unsignedLong': 'int'
+  'xsd:unsignedInt': 'int'
+  'xsd:unsignedShort': 'int'
+  'xsd:unsignedByte': 'int'
+
+  # Decimal types — ALL as string for precision preservation
+  'xsd:decimal': 'string'
+  'xsd:float': 'string'
+  'xsd:double': 'string'
+
+  # Date/time types
+  'xsd:date': 'DateTimeImmutable'
+  'xsd:dateTime': 'DateTimeImmutable'
+  'xsd:time': 'DateTimeImmutable'
+  'xsd:gDay': 'string'
+  'xsd:gMonth': 'string'
+  'xsd:gYear': 'string'
+  'xsd:gYearMonth': 'string'
+  'xsd:gMonthDay': 'string'
+  'xsd:duration': 'string'
+
+  # Binary types
+  'xsd:base64Binary': 'string'
+  'xsd:hexBinary': 'string'
+
+# UBL CCTS base types that map directly to PHP primitives (no wrapper class generated).
+# When the CBC type chain resolves to one of these base type names,
+# the generator emits the PHP primitive directly instead of a Cbc\* leaf class.
+primitive_types:
+  'IndicatorType': 'bool'
+  'DateType': 'DateTimeImmutable'
+  'TimeType': 'DateTimeImmutable'

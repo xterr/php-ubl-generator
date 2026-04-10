@@ -1,0 +1,19 @@
+# Irregular plural overrides for array property names.
+# When an XSD element with maxOccurs="unbounded" is converted to a PHP property,
+# the name is pluralized. These overrides handle English irregulars.
+# Key: XSD element name (PascalCase), Value: camelCase plural form.
+plural_overrides:
+  'Party': 'parties'
+  'Country': 'countries'
+  'Category': 'categories'
+  'Currency': 'currencies'
+  'Delivery': 'deliveries'
+  'Activity': 'activities'
+  'Penalty': 'penalties'
+  'Accessory': 'accessories'
+  'Summary': 'summaries'
+  'Property': 'properties'
+  'Policy': 'policies'
+  'Capability': 'capabilities'
+  'Agency': 'agencies'
+  'Territory': 'territories'

@@ -1,0 +1,10 @@
+# Generated UBL classes — collapse in diffs, exclude from language stats
+src/Cbc/**/*.php linguist-generated=true
+src/Cac/**/*.php linguist-generated=true
+src/Doc/**/*.php linguist-generated=true
+src/Enum/**/*.php linguist-generated=true
+src/Xml/DocumentRegistry.php linguist-generated=true
+src/Xml/TypeMap.php linguist-generated=true
+
+# Vendored XSD schemas
+resources/schemas/** linguist-vendored=true

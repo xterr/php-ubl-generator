@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+$autoloadPaths = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$autoloaded = false;
+foreach ($autoloadPaths as $autoloadPath) {
+    if (file_exists($autoloadPath)) {
+        require $autoloadPath;
+        $autoloaded = true;
+        break;
+    }
+}
+
+if (!$autoloaded) {
+    fwrite(STDERR, "Could not find autoloader. Run 'composer install' first.\n");
+    exit(1);
+}
+
+use Symfony\Component\Console\Application;
+use Xterr\UBL\Generator\Command\GenerateCommand;
+
+$application = new Application('php-ubl-generator', '0.1.0');
+$application->addCommand(new GenerateCommand());
+$application->setDefaultCommand('ubl:generate', true);
+$application->run();

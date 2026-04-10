@@ -1,0 +1,13 @@
+parameters:
+    level: 8
+    paths:
+        - src/
+    excludePaths:
+        analyseAndScan:
+            - src/Emitter/
+            - src/Command/
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Access to an undefined property object::\$#'
+    scanDirectories:
+        - runtime/

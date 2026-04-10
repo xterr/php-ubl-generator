@@ -1,8 +1,9 @@
 {
-  "name": "xterr/php-ubl",
-  "description": "UBL parser and generator",
+  "name": "xterr/php-ubl-generator",
+  "description": "UBL 2.x XSD-to-PHP 8.4+ code generator — produces typed classes with XML mapping attributes from OASIS XSD schemas",
   "license": "MIT",
   "type": "library",
+  "keywords": ["ubl", "xml", "xsd", "code-generator", "e-invoicing", "espd", "procurement", "oasis", "peppol"],
   "authors": [
     {
       "name": "Razvan Ceana",
@@ -10,35 +11,45 @@
     }
   ],
   "require": {
-    "php": ">=7.1 || ^8.0",
-    "ext-json": "*"
+    "php": "^8.4",
+    "ext-dom": "*",
+    "ext-libxml": "*",
+    "ext-mbstring": "*",
+    "goetas-webservices/xsd-reader": "^0.4",
+    "nette/php-generator": "^4.1",
+    "symfony/config": "^7.0 || ^8.0",
+    "symfony/console": "^7.0 || ^8.0",
+    "symfony/filesystem": "^7.0 || ^8.0",
+    "symfony/finder": "^7.0 || ^8.0",
+    "symfony/string": "^7.0 || ^8.0",
+    "symfony/yaml": "^7.0 || ^8.0"
   },
   "require-dev": {
-    "illuminate/contracts": "^5.8 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
-    "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5 || ^10.0 || ^11.0",
-    "symfony/console": "^4.4 || ^5.0 || ^6.0 || ^7.0 || ^8.0",
-    "vimeo/psalm": "^4.30 || ^5.9 || ^6.0"
-  },
-  "suggest": {
-    "illuminate/contracts": "Required for Laravel integration",
-    "symfony/translation-contracts": "Required for Symfony integration"
+    "phpstan/phpstan": "^2.0",
+    "phpunit/phpunit": "^11.0"
   },
   "autoload": {
     "psr-4": {
-      "Xterr\\UBL\\": "src/"
+      "Xterr\\UBL\\Generator\\": "src/",
+      "Xterr\\UBL\\": "runtime/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Xterr\\UBL\\Tests\\": [
-        "tests/"
-      ]
+      "Xterr\\UBL\\Generator\\Tests\\": "tests/"
     }
   },
   "bin": [
     "bin/console"
   ],
+  "config": {
+    "sort-packages": true
+  },
   "scripts": {
-    "test": "phpunit"
+    "test": "phpunit",
+    "test:unit": "phpunit --testsuite=unit",
+    "test:integration": "phpunit --testsuite=integration",
+    "analyse": "phpstan analyse",
+    "generate": "php bin/console ubl:generate --force"
   }
 }
