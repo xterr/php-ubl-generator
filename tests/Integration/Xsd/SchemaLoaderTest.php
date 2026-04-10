@@ -9,7 +9,7 @@ use Xterr\UBL\Generator\Xsd\SchemaLoader;
 
 final class SchemaLoaderTest extends TestCase
 {
-    private const string XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
+    private const XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
 
     #[Test]
     public function loadAllReturns93Schemas(): void

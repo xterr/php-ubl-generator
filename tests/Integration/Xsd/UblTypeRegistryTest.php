@@ -10,7 +10,7 @@ use Xterr\UBL\Xml\Mapping\XmlNamespace;
 
 final class UblTypeRegistryTest extends TestCase
 {
-    private const string XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
+    private const XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
 
     private static UblTypeRegistry $registry;
 
