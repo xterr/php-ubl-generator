@@ -6,6 +6,7 @@ namespace Xterr\UBL\Generator\Config;
 
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
+use Xterr\UBL\Generator\Exception\GeneratorException;
 
 final readonly class GeneratorConfig
 {
@@ -171,7 +172,7 @@ final readonly class GeneratorConfig
     {
         foreach ($identifiers as $key => $value) {
             if (!preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/', $value)) {
-                throw new \Xterr\UBL\Exception\GeneratorException(
+                throw new GeneratorException(
                     sprintf("Invalid PHP identifier '%s' for key '%s' in %s.", $value, $key, $context),
                 );
             }

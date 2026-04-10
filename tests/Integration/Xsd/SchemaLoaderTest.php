@@ -4,7 +4,7 @@ namespace Xterr\UBL\Tests\Integration\Xsd;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Xterr\UBL\Exception\SchemaParseException;
+use Xterr\UBL\Generator\Exception\SchemaParseException;
 use Xterr\UBL\Generator\Xsd\SchemaLoader;
 
 final class SchemaLoaderTest extends TestCase

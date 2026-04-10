@@ -5,6 +5,7 @@
 .phpunit.result.cache
 PHP-UBL-LIBRARY-PLAN.md
 openspec
+composer.lock
 
 # Vendored XSD schemas — downloaded by users, not shipped in the repo
 resources/schemas/

@@ -4,8 +4,8 @@ namespace Xterr\UBL\Generator\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Xterr\UBL\Exception\DeserializationException;
-use Xterr\UBL\Exception\GeneratorException;
-use Xterr\UBL\Exception\SchemaParseException;
+use Xterr\UBL\Generator\Exception\GeneratorException;
+use Xterr\UBL\Generator\Exception\SchemaParseException;
 use Xterr\UBL\Generator\Config\GeneratorConfig;
 use Xterr\UBL\Generator\Tests\Fixtures\Xml\Serializer\InvoiceFixture;
 use Xterr\UBL\Xml\XmlDeserializer;

@@ -4,7 +4,7 @@ namespace Xterr\UBL\Generator\Xsd;
 
 use GoetasWebservices\XML\XSDReader\Schema\Schema;
 use GoetasWebservices\XML\XSDReader\SchemaReader;
-use Xterr\UBL\Exception\SchemaParseException;
+use Xterr\UBL\Generator\Exception\SchemaParseException;
 
 final class SchemaLoader
 {
