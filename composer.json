@@ -1,0 +1,44 @@
+{
+  "name": "xterr/php-ubl",
+  "description": "UBL parser and generator",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Razvan Ceana",
+      "email": "razvan@ceana.ro"
+    }
+  ],
+  "require": {
+    "php": ">=7.1 || ^8.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "illuminate/contracts": "^5.8 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
+    "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5 || ^10.0 || ^11.0",
+    "symfony/console": "^4.4 || ^5.0 || ^6.0 || ^7.0 || ^8.0",
+    "vimeo/psalm": "^4.30 || ^5.9 || ^6.0"
+  },
+  "suggest": {
+    "illuminate/contracts": "Required for Laravel integration",
+    "symfony/translation-contracts": "Required for Symfony integration"
+  },
+  "autoload": {
+    "psr-4": {
+      "Xterr\\UBL\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Xterr\\UBL\\Tests\\": [
+        "tests/"
+      ]
+    }
+  },
+  "bin": [
+    "bin/console"
+  ],
+  "scripts": {
+    "test": "phpunit"
+  }
+}
