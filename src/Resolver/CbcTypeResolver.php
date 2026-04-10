@@ -6,6 +6,7 @@ use GoetasWebservices\XML\XSDReader\Schema\Attribute\AttributeItem;
 use GoetasWebservices\XML\XSDReader\Schema\Attribute\AttributeSingle;
 use GoetasWebservices\XML\XSDReader\Schema\Attribute\Group as AttributeGroup;
 use GoetasWebservices\XML\XSDReader\Schema\Type\BaseComplexType;
+use GoetasWebservices\XML\XSDReader\Schema\Type\ComplexTypeSimpleContent;
 use GoetasWebservices\XML\XSDReader\Schema\Type\SimpleType;
 use GoetasWebservices\XML\XSDReader\Schema\Type\Type;
 use Symfony\Component\Yaml\Yaml;
@@ -44,9 +45,9 @@ final class CbcTypeResolver
 
         $this->resolved = true;
 
-        $cbcElements = [];
-        foreach (UblTypeRegistry::LEAF_ELEMENT_NAMESPACES as $leafNs) {
-            $cbcElements = array_merge($cbcElements, $this->registry->globalElementsInNamespace($leafNs));
+        $leafElements = [];
+        foreach (UblTypeRegistry::COMPONENT_NAMESPACES as $ns) {
+            $leafElements = array_merge($leafElements, $this->registry->globalElementsInNamespace($ns));
         }
 
         /** @var array<string, list<string>> */
@@ -56,10 +57,11 @@ final class CbcTypeResolver
         /** @var array<string, string> */
         $valueTypeByBaseType = [];
 
-        foreach ($cbcElements as $element) {
+        foreach ($leafElements as $element) {
             $type = $element->getType();
 
-            if ($type === null) {
+            // Only process simpleContent complex types (leaf types: value + attributes)
+            if (!$type instanceof ComplexTypeSimpleContent) {
                 continue;
             }
 
@@ -340,12 +342,12 @@ final class CbcTypeResolver
 
     private function resolveBaseTypeNameForElement(string $cbcElementName): string
     {
-        $cbcElements = [];
-        foreach (UblTypeRegistry::LEAF_ELEMENT_NAMESPACES as $leafNs) {
-            $cbcElements = array_merge($cbcElements, $this->registry->globalElementsInNamespace($leafNs));
+        $allElements = [];
+        foreach (UblTypeRegistry::COMPONENT_NAMESPACES as $ns) {
+            $allElements = array_merge($allElements, $this->registry->globalElementsInNamespace($ns));
         }
 
-        foreach ($cbcElements as $element) {
+        foreach ($allElements as $element) {
             if ($element->getName() === $cbcElementName) {
                 $type = $element->getType();
 

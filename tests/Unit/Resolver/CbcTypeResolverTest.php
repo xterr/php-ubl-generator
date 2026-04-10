@@ -99,12 +99,12 @@ final class CbcTypeResolverTest extends TestCase
     }
 
     #[Test]
-    public function allLeafTypesHaveNonEmptyCbcElementNames(): void
+    public function allLeafTypesHaveNonEmptyElementNames(): void
     {
         foreach (self::$resolver->leafTypes() as $leafType) {
             self::assertNotEmpty(
                 $leafType->cbcElementNames,
-                "Leaf type {$leafType->className} has no CBC element names",
+                "Leaf type {$leafType->className} has no element names",
             );
         }
     }
@@ -151,5 +151,26 @@ final class CbcTypeResolverTest extends TestCase
         self::$resolver->resolve();
 
         self::assertCount($beforeCount, self::$resolver->leafTypes());
+    }
+
+    #[Test]
+    public function extAggregateElementsAreNotResolvedAsLeafTypes(): void
+    {
+        // UBLExtensions is a global element in EXT namespace with a sequence type (aggregate),
+        // not simpleContent. It must NOT appear as a leaf type.
+        self::assertNull(self::$resolver->leafTypeForElement('UBLExtensions'));
+        self::assertNull(self::$resolver->phpTypeForElement('UBLExtensions'));
+    }
+
+    #[Test]
+    public function leafTypesDoNotContainAggregateClassNames(): void
+    {
+        $leafTypes = self::$resolver->leafTypes();
+        $classNames = array_keys($leafTypes);
+
+        // EXT aggregate types must never appear in leaf types
+        self::assertNotContains('UBLExtensions', $classNames);
+        self::assertNotContains('UBLExtension', $classNames);
+        self::assertNotContains('ExtensionContent', $classNames);
     }
 }

@@ -119,4 +119,42 @@ final class UblTypeRegistryTest extends TestCase
         self::assertContains(XmlNamespace::CBC, $namespaces);
         self::assertContains(XmlNamespace::CAC, $namespaces);
     }
+
+    #[Test]
+    public function componentNamespacesContainsAllSixUblNamespaces(): void
+    {
+        $expected = [
+            XmlNamespace::CBC,
+            XmlNamespace::SBC,
+            XmlNamespace::EXT,
+            XmlNamespace::CAC,
+            XmlNamespace::SAC,
+            XmlNamespace::SIG,
+        ];
+
+        self::assertSame($expected, UblTypeRegistry::COMPONENT_NAMESPACES);
+    }
+
+    #[Test]
+    public function extNamespaceContainsComplexTypes(): void
+    {
+        $types = self::$registry->complexTypesInNamespace(XmlNamespace::EXT);
+
+        self::assertGreaterThan(0, count($types));
+
+        $names = array_map(static fn ($t) => $t->getName(), $types);
+        self::assertContains('UBLExtensionsType', $names);
+        self::assertContains('UBLExtensionType', $names);
+    }
+
+    #[Test]
+    public function extNamespaceContainsGlobalElements(): void
+    {
+        $elements = self::$registry->globalElementsInNamespace(XmlNamespace::EXT);
+
+        self::assertNotEmpty($elements);
+
+        $names = array_map(static fn ($e) => $e->getName(), $elements);
+        self::assertContains('UBLExtensions', $names);
+    }
 }

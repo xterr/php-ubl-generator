@@ -83,8 +83,8 @@ final class UblGenerator
         $this->resolved = true;
 
         $cacCount = 0;
-        foreach (UblTypeRegistry::AGGREGATE_TYPE_NAMESPACES as $aggNs) {
-            foreach ($this->registry->complexTypesInNamespace($aggNs) as $ct) {
+        foreach (UblTypeRegistry::COMPONENT_NAMESPACES as $ns) {
+            foreach ($this->registry->complexTypesInNamespace($ns) as $ct) {
                 if ($ct instanceof ComplexType && $ct->getName() !== null
                     && !$this->isFiltered($ct->getName()) && $ct->getElements() !== []) {
                     $cacCount++;
@@ -160,7 +160,7 @@ final class UblGenerator
         }
 
         $progress('Emitting aggregate complex classes', 0, 0);
-        foreach (UblTypeRegistry::AGGREGATE_TYPE_NAMESPACES as $aggregateNs) {
+        foreach (UblTypeRegistry::COMPONENT_NAMESPACES as $aggregateNs) {
             foreach ($this->registry->complexTypesInNamespace($aggregateNs) as $complexType) {
                 if (!$complexType instanceof ComplexType) {
                     continue;
