@@ -1,10 +1,20 @@
 {
   "name": "xterr/php-ubl-generator",
-  "version": "1.0.1",
   "description": "UBL 2.x XSD-to-PHP 8.4+ code generator — produces typed classes with XML mapping attributes from OASIS XSD schemas",
   "license": "MIT",
   "type": "library",
-  "keywords": ["ubl", "xml", "xsd", "code-generator", "e-invoicing", "espd", "procurement", "oasis", "peppol"],
+  "version": "1.0.1",
+  "keywords": [
+    "ubl",
+    "xml",
+    "xsd",
+    "code-generator",
+    "e-invoicing",
+    "espd",
+    "procurement",
+    "oasis",
+    "peppol"
+  ],
   "authors": [
     {
       "name": "Razvan Ceana",
@@ -47,10 +57,10 @@
     "sort-packages": true
   },
   "scripts": {
-    "test": "phpunit",
-    "test:unit": "phpunit --testsuite=unit",
-    "test:integration": "phpunit --testsuite=integration",
     "analyze": "phpstan analyze",
-    "generate": "php bin/console ubl:generate --force"
+    "generate": "php bin/console ubl:generate --force",
+    "test": "phpunit",
+    "test:integration": "phpunit --testsuite=integration",
+    "test:unit": "phpunit --testsuite=unit"
   }
 }
