@@ -381,6 +381,6 @@ final class RoundTripTest extends TestCase
 
     private static function fixturesDir(): string
     {
-        return __DIR__ . '/../Fixtures/xml';
+        return __DIR__ . '/../Fixtures/Xml';
     }
 }
