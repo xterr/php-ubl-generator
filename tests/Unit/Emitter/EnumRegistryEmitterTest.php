@@ -86,21 +86,29 @@ final class EnumRegistryEmitterTest extends TestCase
     }
 
     #[Test]
-    public function registryEmitterProducesTypeMapWithMapAndMethod(): void
+    public function registryEmitterProducesClassMapWithClassReferences(): void
     {
         $emitter = new RegistryEmitter($this->config);
-        $output = $emitter->emitTypeMap([
+        $output = $emitter->emitClassMap([
             'TaxAmount' => 'Xterr\\UBL\\Cbc\\Amount',
             'LineExtensionAmount' => 'Xterr\\UBL\\Cbc\\Amount',
+            'DocumentCurrencyCode' => 'Xterr\\UBL\\Cbc\\Code',
         ]);
 
         self::assertStringContainsString('declare(strict_types=1);', $output);
         self::assertStringContainsString('namespace Xterr\\UBL\\Xml;', $output);
-        self::assertStringContainsString('final class TypeMap', $output);
+        self::assertStringContainsString('final class ClassMap', $output);
         self::assertStringContainsString('private const MAP', $output);
         self::assertStringContainsString("'TaxAmount'", $output);
-        self::assertStringContainsString("'Xterr\\UBL\\Cbc\\Amount'", $output);
-        self::assertStringContainsString('public static function classFor(string $cbcElementName): ?string', $output);
+        self::assertStringContainsString("'LineExtensionAmount'", $output);
+        // Uses ::class references, not plain strings
+        self::assertStringContainsString('Amount::class', $output);
+        self::assertStringContainsString('Code::class', $output);
+        self::assertStringContainsString('use Xterr\\UBL\\Cbc\\Amount;', $output);
+        self::assertStringContainsString('use Xterr\\UBL\\Cbc\\Code;', $output);
+        self::assertStringContainsString('public static function classFor(string $elementName): ?string', $output);
+        // Must NOT contain plain string FQCNs in the MAP
+        self::assertStringNotContainsString("'Xterr\\UBL\\Cbc\\Amount'", $output);
     }
 
     #[Test]

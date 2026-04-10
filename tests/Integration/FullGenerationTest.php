@@ -59,7 +59,7 @@ final class FullGenerationTest extends TestCase
     public function registryFilesAreGenerated(): void
     {
         self::assertFileExists(self::$tempDir . '/Xml/DocumentRegistry.php');
-        self::assertFileExists(self::$tempDir . '/Xml/TypeMap.php');
+        self::assertFileExists(self::$tempDir . '/Xml/ClassMap.php');
     }
 
     #[Test]
@@ -132,7 +132,7 @@ final class FullGenerationTest extends TestCase
     public function generatedRegistryIsSyntacticallyValid(): void
     {
         $this->assertPhpSyntaxValid(self::$tempDir . '/Xml/DocumentRegistry.php');
-        $this->assertPhpSyntaxValid(self::$tempDir . '/Xml/TypeMap.php');
+        $this->assertPhpSyntaxValid(self::$tempDir . '/Xml/ClassMap.php');
     }
 
     private function assertPhpSyntaxValid(string $filePath): void

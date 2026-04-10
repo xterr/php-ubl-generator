@@ -268,7 +268,7 @@ final class UblGenerator
             }
         }
         $writer->write('Xml/DocumentRegistry.php', $registryEmitter->emitDocumentRegistry($docRoots));
-        $writer->write('Xml/TypeMap.php', $registryEmitter->emitTypeMap($typeMapEntries));
+        $writer->write('Xml/ClassMap.php', $registryEmitter->emitClassMap($typeMapEntries));
 
         return new GenerationResult(
             schemaVersion: $this->config->schemaVersion,
