@@ -4,7 +4,8 @@
 # UBL schema version to generate from (2.1, 2.2, 2.3, 2.4)
 schema_version: '2.4'
 
-# Path to XSD schemas directory (null = use bundled schemas)
+# Path to XSD schemas directory (required — download UBL schemas and point here)
+# schema_dir: '/path/to/UBL-2.4/xsd'
 schema_dir: ~
 
 # Output directory for generated PHP classes

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Minimal UBL Common Aggregate Components for testing -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+  xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+    schemaLocation="UBL-CommonBasicComponents.xsd"/>
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+    schemaLocation="UBL-CommonExtensionComponents.xsd"/>
+
+  <!-- === Global element declarations === -->
+  <xsd:element name="Address" type="cac:AddressType"/>
+  <xsd:element name="Country" type="cac:CountryType"/>
+  <xsd:element name="Party" type="cac:PartyType"/>
+  <xsd:element name="PartyName" type="cac:PartyNameType"/>
+  <xsd:element name="AccountingSupplierParty" type="cac:SupplierPartyType"/>
+  <xsd:element name="AccountingCustomerParty" type="cac:CustomerPartyType"/>
+  <xsd:element name="LegalMonetaryTotal" type="cac:MonetaryTotalType"/>
+  <xsd:element name="InvoiceLine" type="cac:InvoiceLineType"/>
+  <xsd:element name="CreditNoteLine" type="cac:CreditNoteLineType"/>
+  <xsd:element name="Item" type="cac:ItemType"/>
+  <xsd:element name="Price" type="cac:PriceType"/>
+  <xsd:element name="PostalAddress" type="cac:AddressType"/>
+
+  <!-- === AddressType === -->
+  <xsd:complexType name="AddressType">
+    <xsd:sequence>
+      <xsd:element ref="cbc:ID" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:StreetName" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:CityName" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:PostalZone" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cac:Country" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === CountryType === -->
+  <xsd:complexType name="CountryType">
+    <xsd:sequence>
+      <xsd:element ref="cbc:IdentificationCode" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:Name" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === PartyNameType === -->
+  <xsd:complexType name="PartyNameType">
+    <xsd:sequence>
+      <xsd:element ref="cbc:Name" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === PartyType === -->
+  <xsd:complexType name="PartyType">
+    <xsd:sequence>
+      <xsd:element ref="cac:PartyName" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="cac:PostalAddress" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === SupplierPartyType === -->
+  <xsd:complexType name="SupplierPartyType">
+    <xsd:sequence>
+      <xsd:element ref="cac:Party" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === CustomerPartyType === -->
+  <xsd:complexType name="CustomerPartyType">
+    <xsd:sequence>
+      <xsd:element ref="cac:Party" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === MonetaryTotalType === -->
+  <xsd:complexType name="MonetaryTotalType">
+    <xsd:sequence>
+      <xsd:element ref="cbc:LineExtensionAmount" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:TaxExclusiveAmount" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:TaxInclusiveAmount" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:PayableAmount" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === ItemType === -->
+  <xsd:complexType name="ItemType">
+    <xsd:sequence>
+      <xsd:element ref="cbc:Description" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="cbc:Name" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === PriceType === -->
+  <xsd:complexType name="PriceType">
+    <xsd:sequence>
+      <xsd:element ref="cbc:PriceAmount" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === InvoiceLineType === -->
+  <xsd:complexType name="InvoiceLineType">
+    <xsd:sequence>
+      <xsd:element ref="cbc:ID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="cbc:InvoicedQuantity" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:LineExtensionAmount" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cac:Item" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cac:Price" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- === CreditNoteLineType === -->
+  <xsd:complexType name="CreditNoteLineType">
+    <xsd:sequence>
+      <xsd:element ref="cbc:ID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="cbc:CreditedQuantity" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cbc:LineExtensionAmount" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cac:Item" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="cac:Price" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

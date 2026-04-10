@@ -9,7 +9,7 @@ Generate typed PHP 8.4+ classes from OASIS UBL 2.x XSD schemas.
 - Adds PHP 8 attributes for XML mapping (`#[XmlElement]`, `#[XmlRoot]`, etc.)
 - Inline setter validation (type checks, patterns, enumerations)
 - Configurable via YAML (namespace, include/exclude filters, naming overrides)
-- Bundled UBL XSD schemas — no downloads needed
+- Bring your own UBL XSD schemas (download from [OASIS](http://docs.oasis-open.org/ubl/os-UBL-2.4/))
 
 ## Installation
 
@@ -26,17 +26,17 @@ composer require xterr/php-ubl
 ## Quick Start
 
 ```bash
-# Generate all UBL 2.4 types with default config
-php vendor/bin/console ubl:generate --force
+# Generate all UBL 2.4 types (schema-dir is required)
+php vendor/bin/console ubl:generate --schema-dir=path/to/UBL-2.4/xsd --force
 
 # Dry-run (show what would be generated)
-php vendor/bin/console ubl:generate
+php vendor/bin/console ubl:generate --schema-dir=path/to/UBL-2.4/xsd
 
-# Custom config
+# Custom config (schema_dir can be set in the YAML file)
 php vendor/bin/console ubl:generate --config=ubl-generator.yaml --force
 
 # Override namespace
-php vendor/bin/console ubl:generate --namespace='App\Ubl' --output-dir=src/Ubl --force
+php vendor/bin/console ubl:generate --schema-dir=path/to/UBL-2.4/xsd --namespace='App\Ubl' --output-dir=src/Ubl --force
 ```
 
 ## Configuration
@@ -49,6 +49,7 @@ cp vendor/xterr/php-ubl-generator/resources/config/ubl-generator.yaml.dist ubl-g
 
 Key options:
 
+- `schema_dir` — Path to UBL XSD schemas directory (required)
 - `schema_version` — UBL version (2.1, 2.2, 2.3, 2.4)
 - `namespace` — Root PHP namespace
 - `output_dir` — Where to write generated files

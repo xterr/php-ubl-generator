@@ -11,6 +11,8 @@ use Xterr\UBL\Generator\Command\GenerateCommand;
 
 final class GenerateCommandTest extends TestCase
 {
+    private const FIXTURE_XSD_DIR = __DIR__ . '/../../Fixtures/Xsd';
+
     private CommandTester $tester;
 
     protected function setUp(): void
@@ -25,7 +27,7 @@ final class GenerateCommandTest extends TestCase
     #[Test]
     public function dryRunExitsSuccessfullyAndShowsWarning(): void
     {
-        $this->tester->execute([]);
+        $this->tester->execute(['--schema-dir' => self::FIXTURE_XSD_DIR]);
 
         self::assertSame(0, $this->tester->getStatusCode());
         self::assertStringContainsString('Dry-run mode', $this->tester->getDisplay());
@@ -39,6 +41,7 @@ final class GenerateCommandTest extends TestCase
 
         try {
             $this->tester->execute([
+                '--schema-dir' => self::FIXTURE_XSD_DIR,
                 '--force' => true,
                 '--output-dir' => $tempDir,
             ]);
@@ -54,7 +57,10 @@ final class GenerateCommandTest extends TestCase
     #[Test]
     public function schemaVersionOverrideIsApplied(): void
     {
-        $this->tester->execute(['--schema-version' => '2.1']);
+        $this->tester->execute([
+            '--schema-dir' => self::FIXTURE_XSD_DIR,
+            '--schema-version' => '2.1',
+        ]);
 
         $display = $this->tester->getDisplay();
         self::assertSame(0, $this->tester->getStatusCode());
@@ -64,7 +70,10 @@ final class GenerateCommandTest extends TestCase
     #[Test]
     public function nonExistentConfigFallsBackToDefaults(): void
     {
-        $this->tester->execute(['--config' => '/nonexistent/path/config.yaml']);
+        $this->tester->execute([
+            '--schema-dir' => self::FIXTURE_XSD_DIR,
+            '--config' => '/nonexistent/path/config.yaml',
+        ]);
 
         $display = $this->tester->getDisplay();
         self::assertSame(0, $this->tester->getStatusCode());

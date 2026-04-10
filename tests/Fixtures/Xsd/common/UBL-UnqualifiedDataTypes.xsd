@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Minimal BDNDR Unqualified Data Types for testing -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="urn:oasis:names:specification:bdndr:schema:xsd:UnqualifiedDataTypes-1"
+  xmlns:ccts-cct="urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:import schemaLocation="CCTS-CoreComponentTypes.xsd"
+    namespace="urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"/>
+
+  <!-- AmountType: restricts CCTS AmountType, makes currencyID required -->
+  <xsd:complexType name="AmountType">
+    <xsd:simpleContent>
+      <xsd:restriction base="ccts-cct:AmountType">
+        <xsd:attribute name="currencyID" type="xsd:normalizedString" use="required"/>
+      </xsd:restriction>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- CodeType: extends CCTS CodeType -->
+  <xsd:complexType name="CodeType">
+    <xsd:simpleContent>
+      <xsd:extension base="ccts-cct:CodeType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- IdentifierType: extends CCTS IdentifierType -->
+  <xsd:complexType name="IdentifierType">
+    <xsd:simpleContent>
+      <xsd:extension base="ccts-cct:IdentifierType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- IndicatorType: extends xsd:boolean (ComplexType, NOT SimpleType) -->
+  <xsd:complexType name="IndicatorType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:boolean"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- DateType: extends xsd:date -->
+  <xsd:complexType name="DateType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:date"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- TimeType: extends xsd:time -->
+  <xsd:complexType name="TimeType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:time"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- MeasureType: restricts CCTS MeasureType, makes unitCode required -->
+  <xsd:complexType name="MeasureType">
+    <xsd:simpleContent>
+      <xsd:restriction base="ccts-cct:MeasureType">
+        <xsd:attribute name="unitCode" type="xsd:normalizedString" use="required"/>
+      </xsd:restriction>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- NumericType: extends CCTS NumericType -->
+  <xsd:complexType name="NumericType">
+    <xsd:simpleContent>
+      <xsd:extension base="ccts-cct:NumericType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- QuantityType: extends CCTS QuantityType -->
+  <xsd:complexType name="QuantityType">
+    <xsd:simpleContent>
+      <xsd:extension base="ccts-cct:QuantityType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- TextType: extends CCTS TextType -->
+  <xsd:complexType name="TextType">
+    <xsd:simpleContent>
+      <xsd:extension base="ccts-cct:TextType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- NameType: extends CCTS TextType (secondary representation term) -->
+  <xsd:complexType name="NameType">
+    <xsd:simpleContent>
+      <xsd:extension base="ccts-cct:TextType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+</xsd:schema>

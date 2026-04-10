@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Minimal UBL Common Basic Components for testing -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+  xmlns:udt="urn:oasis:names:specification:bdndr:schema:xsd:UnqualifiedDataTypes-1"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:import namespace="urn:oasis:names:specification:bdndr:schema:xsd:UnqualifiedDataTypes-1"
+    schemaLocation="UBL-UnqualifiedDataTypes.xsd"/>
+
+  <!-- === Amount elements === -->
+  <xsd:element name="Amount" type="cbc:AmountType"/>
+  <xsd:complexType name="AmountType"><xsd:simpleContent><xsd:extension base="udt:AmountType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="LineExtensionAmount" type="cbc:LineExtensionAmountType"/>
+  <xsd:complexType name="LineExtensionAmountType"><xsd:simpleContent><xsd:extension base="udt:AmountType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="TaxExclusiveAmount" type="cbc:TaxExclusiveAmountType"/>
+  <xsd:complexType name="TaxExclusiveAmountType"><xsd:simpleContent><xsd:extension base="udt:AmountType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="TaxInclusiveAmount" type="cbc:TaxInclusiveAmountType"/>
+  <xsd:complexType name="TaxInclusiveAmountType"><xsd:simpleContent><xsd:extension base="udt:AmountType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="PayableAmount" type="cbc:PayableAmountType"/>
+  <xsd:complexType name="PayableAmountType"><xsd:simpleContent><xsd:extension base="udt:AmountType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="PriceAmount" type="cbc:PriceAmountType"/>
+  <xsd:complexType name="PriceAmountType"><xsd:simpleContent><xsd:extension base="udt:AmountType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="TaxAmount" type="cbc:TaxAmountType"/>
+  <xsd:complexType name="TaxAmountType"><xsd:simpleContent><xsd:extension base="udt:AmountType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Code elements === -->
+  <xsd:element name="DocumentCurrencyCode" type="cbc:DocumentCurrencyCodeType"/>
+  <xsd:complexType name="DocumentCurrencyCodeType"><xsd:simpleContent><xsd:extension base="udt:CodeType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="InvoiceTypeCode" type="cbc:InvoiceTypeCodeType"/>
+  <xsd:complexType name="InvoiceTypeCodeType"><xsd:simpleContent><xsd:extension base="udt:CodeType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="IdentificationCode" type="cbc:IdentificationCodeType"/>
+  <xsd:complexType name="IdentificationCodeType"><xsd:simpleContent><xsd:extension base="udt:CodeType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="CreditNoteTypeCode" type="cbc:CreditNoteTypeCodeType"/>
+  <xsd:complexType name="CreditNoteTypeCodeType"><xsd:simpleContent><xsd:extension base="udt:CodeType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Identifier elements === -->
+  <xsd:element name="ID" type="cbc:IDType"/>
+  <xsd:complexType name="IDType"><xsd:simpleContent><xsd:extension base="udt:IdentifierType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="UBLVersionID" type="cbc:UBLVersionIDType"/>
+  <xsd:complexType name="UBLVersionIDType"><xsd:simpleContent><xsd:extension base="udt:IdentifierType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Indicator elements === -->
+  <xsd:element name="CopyIndicator" type="cbc:CopyIndicatorType"/>
+  <xsd:complexType name="CopyIndicatorType"><xsd:simpleContent><xsd:extension base="udt:IndicatorType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Date elements === -->
+  <xsd:element name="IssueDate" type="cbc:IssueDateType"/>
+  <xsd:complexType name="IssueDateType"><xsd:simpleContent><xsd:extension base="udt:DateType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Text elements === -->
+  <xsd:element name="Description" type="cbc:DescriptionType"/>
+  <xsd:complexType name="DescriptionType"><xsd:simpleContent><xsd:extension base="udt:TextType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="PostalZone" type="cbc:PostalZoneType"/>
+  <xsd:complexType name="PostalZoneType"><xsd:simpleContent><xsd:extension base="udt:TextType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="Note" type="cbc:NoteType"/>
+  <xsd:complexType name="NoteType"><xsd:simpleContent><xsd:extension base="udt:TextType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Name elements === -->
+  <xsd:element name="Name" type="cbc:NameType"/>
+  <xsd:complexType name="NameType"><xsd:simpleContent><xsd:extension base="udt:NameType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="StreetName" type="cbc:StreetNameType"/>
+  <xsd:complexType name="StreetNameType"><xsd:simpleContent><xsd:extension base="udt:NameType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="CityName" type="cbc:CityNameType"/>
+  <xsd:complexType name="CityNameType"><xsd:simpleContent><xsd:extension base="udt:NameType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Quantity elements === -->
+  <xsd:element name="InvoicedQuantity" type="cbc:InvoicedQuantityType"/>
+  <xsd:complexType name="InvoicedQuantityType"><xsd:simpleContent><xsd:extension base="udt:QuantityType"/></xsd:simpleContent></xsd:complexType>
+
+  <xsd:element name="CreditedQuantity" type="cbc:CreditedQuantityType"/>
+  <xsd:complexType name="CreditedQuantityType"><xsd:simpleContent><xsd:extension base="udt:QuantityType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Measure elements === -->
+  <xsd:element name="Measure" type="cbc:MeasureType"/>
+  <xsd:complexType name="MeasureType"><xsd:simpleContent><xsd:extension base="udt:MeasureType"/></xsd:simpleContent></xsd:complexType>
+
+  <!-- === Numeric elements === -->
+  <xsd:element name="SequenceNumeric" type="cbc:SequenceNumericType"/>
+  <xsd:complexType name="SequenceNumericType"><xsd:simpleContent><xsd:extension base="udt:NumericType"/></xsd:simpleContent></xsd:complexType>
+
+</xsd:schema>

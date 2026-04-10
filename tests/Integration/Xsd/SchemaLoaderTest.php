@@ -9,15 +9,15 @@ use Xterr\UBL\Generator\Xsd\SchemaLoader;
 
 final class SchemaLoaderTest extends TestCase
 {
-    private const XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
+    private const XSD_DIR = __DIR__ . '/../../Fixtures/Xsd';
 
     #[Test]
-    public function loadAllReturns93Schemas(): void
+    public function loadAllReturns2Schemas(): void
     {
         $loader = new SchemaLoader();
         $schemas = $loader->loadAll(self::XSD_DIR);
 
-        self::assertCount(93, $schemas);
+        self::assertCount(2, $schemas);
     }
 
     #[Test]
@@ -35,7 +35,7 @@ final class SchemaLoaderTest extends TestCase
     public function loadFileParsesInvoiceSchema(): void
     {
         $loader = new SchemaLoader();
-        $schema = $loader->loadFile(self::XSD_DIR . '/maindoc/UBL-Invoice-2.4.xsd');
+        $schema = $loader->loadFile(self::XSD_DIR . '/maindoc/UBL-Invoice-Test.xsd');
 
         self::assertSame(
             'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
@@ -47,7 +47,7 @@ final class SchemaLoaderTest extends TestCase
     public function loadFileImportsCommonSchemas(): void
     {
         $loader = new SchemaLoader();
-        $schema = $loader->loadFile(self::XSD_DIR . '/maindoc/UBL-Invoice-2.4.xsd');
+        $schema = $loader->loadFile(self::XSD_DIR . '/maindoc/UBL-Invoice-Test.xsd');
 
         self::assertNotEmpty($schema->getSchemas());
     }

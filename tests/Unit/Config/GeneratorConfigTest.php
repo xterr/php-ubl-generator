@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Xterr\UBL\Generator\Config\GeneratorConfig;
+use Xterr\UBL\Generator\Exception\GeneratorException;
 
 final class GeneratorConfigTest extends TestCase
 {
@@ -102,13 +103,13 @@ final class GeneratorConfigTest extends TestCase
     }
 
     #[Test]
-    public function resolveSchemaDirWithNullSchemaDir(): void
+    public function resolveSchemaDirWithNullSchemaDirThrowsException(): void
     {
-        $config = GeneratorConfig::defaults();
-        $resolved = $config->resolveSchemaDir();
+        $this->expectException(GeneratorException::class);
+        $this->expectExceptionMessage('schema_dir is required');
 
-        $expected = dirname(__DIR__, 3) . '/resources/schemas/2.4/xsd';
-        self::assertSame($expected, $resolved);
+        $config = GeneratorConfig::defaults();
+        $config->resolveSchemaDir();
     }
 
     #[Test]

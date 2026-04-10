@@ -25,6 +25,7 @@ final class RoundTripTest extends TestCase
         self::$generatedDir = sys_get_temp_dir() . '/php-ubl-roundtrip-' . getmypid();
 
         $config = GeneratorConfig::defaults()->withOverrides([
+            'schema_dir' => __DIR__ . '/../Fixtures/Xsd',
             'output_dir' => self::$generatedDir,
             'namespace' => self::$namespace,
         ]);

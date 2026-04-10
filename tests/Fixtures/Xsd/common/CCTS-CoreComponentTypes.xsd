@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Minimal CCTS Core Component Types for testing -->
+<xsd:schema targetNamespace="urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"
+  xmlns:cct="urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:complexType name="AmountType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:decimal">
+        <xsd:attribute name="currencyID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="currencyCodeListVersionID" type="xsd:normalizedString" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="CodeType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:normalizedString">
+        <xsd:attribute name="listID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="listAgencyID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="listAgencyName" type="xsd:string" use="optional"/>
+        <xsd:attribute name="listName" type="xsd:string" use="optional"/>
+        <xsd:attribute name="listVersionID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="name" type="xsd:string" use="optional"/>
+        <xsd:attribute name="languageID" type="xsd:language" use="optional"/>
+        <xsd:attribute name="listURI" type="xsd:anyURI" use="optional"/>
+        <xsd:attribute name="listSchemeURI" type="xsd:anyURI" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentifierType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:normalizedString">
+        <xsd:attribute name="schemeID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="schemeName" type="xsd:string" use="optional"/>
+        <xsd:attribute name="schemeAgencyID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="schemeAgencyName" type="xsd:string" use="optional"/>
+        <xsd:attribute name="schemeVersionID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="schemeDataURI" type="xsd:anyURI" use="optional"/>
+        <xsd:attribute name="schemeURI" type="xsd:anyURI" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IndicatorType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="format" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="MeasureType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:decimal">
+        <xsd:attribute name="unitCode" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="unitCodeListVersionID" type="xsd:normalizedString" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="NumericType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:decimal">
+        <xsd:attribute name="format" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="QuantityType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:decimal">
+        <xsd:attribute name="unitCode" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="unitCodeListID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="unitCodeListAgencyID" type="xsd:normalizedString" use="optional"/>
+        <xsd:attribute name="unitCodeListAgencyName" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="TextType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="languageID" type="xsd:language" use="optional"/>
+        <xsd:attribute name="languageLocaleID" type="xsd:normalizedString" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+</xsd:schema>

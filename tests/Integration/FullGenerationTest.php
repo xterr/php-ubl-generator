@@ -18,6 +18,7 @@ final class FullGenerationTest extends TestCase
         self::$tempDir = sys_get_temp_dir() . '/php-ubl-test-' . uniqid('', true);
 
         $config = GeneratorConfig::defaults()->withOverrides([
+            'schema_dir' => __DIR__ . '/../Fixtures/Xsd',
             'output_dir' => self::$tempDir,
         ]);
 
@@ -42,7 +43,7 @@ final class FullGenerationTest extends TestCase
     #[Test]
     public function cacComplexClassesAreGenerated(): void
     {
-        self::assertGreaterThan(100, self::$result->cacClassCount);
+        self::assertGreaterThan(0, self::$result->cacClassCount);
         self::assertFileExists(self::$tempDir . '/Cac/Address.php');
         self::assertFileExists(self::$tempDir . '/Cac/Party.php');
     }
@@ -50,7 +51,7 @@ final class FullGenerationTest extends TestCase
     #[Test]
     public function documentRootClassesAreGenerated(): void
     {
-        self::assertGreaterThanOrEqual(93, self::$result->docClassCount);
+        self::assertGreaterThanOrEqual(2, self::$result->docClassCount);
         self::assertFileExists(self::$tempDir . '/Doc/Invoice.php');
     }
 

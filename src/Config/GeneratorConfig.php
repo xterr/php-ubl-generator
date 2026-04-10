@@ -108,15 +108,16 @@ final readonly class GeneratorConfig
 
     /**
      * Resolve the actual schema directory path.
-     * Falls back to bundled schemas if schemaDir is null.
+     *
+     * @throws GeneratorException if schemaDir is not configured
      */
     public function resolveSchemaDir(): string
     {
-        if ($this->schemaDir !== null) {
-            return rtrim($this->schemaDir, '/');
+        if ($this->schemaDir === null) {
+            throw new GeneratorException('schema_dir is required — provide the path to UBL XSD schemas');
         }
 
-        return dirname(__DIR__, 2) . '/resources/schemas/' . $this->schemaVersion . '/xsd';
+        return rtrim($this->schemaDir, '/');
     }
 
     /**

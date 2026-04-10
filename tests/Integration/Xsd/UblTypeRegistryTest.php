@@ -10,7 +10,7 @@ use Xterr\UBL\Xml\Mapping\XmlNamespace;
 
 final class UblTypeRegistryTest extends TestCase
 {
-    private const XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
+    private const XSD_DIR = __DIR__ . '/../../Fixtures/Xsd';
 
     private static UblTypeRegistry $registry;
 
@@ -24,11 +24,11 @@ final class UblTypeRegistryTest extends TestCase
     }
 
     #[Test]
-    public function cacNamespaceContainsOver200ComplexTypes(): void
+    public function cacNamespaceContainsExpectedComplexTypes(): void
     {
         $types = self::$registry->complexTypesInNamespace(XmlNamespace::CAC);
 
-        self::assertGreaterThan(200, count($types));
+        self::assertGreaterThan(0, count($types));
     }
 
     #[Test]
@@ -85,11 +85,11 @@ final class UblTypeRegistryTest extends TestCase
     }
 
     #[Test]
-    public function documentRootElementsReturns93Elements(): void
+    public function documentRootElementsReturns2Elements(): void
     {
         $roots = self::$registry->documentRootElements();
 
-        self::assertCount(93, $roots);
+        self::assertCount(2, $roots);
     }
 
     #[Test]

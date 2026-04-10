@@ -10,7 +10,7 @@ use Xterr\UBL\Generator\Xsd\UblTypeRegistry;
 
 final class CbcTypeResolverTest extends TestCase
 {
-    private const XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
+    private const XSD_DIR = __DIR__ . '/../../Fixtures/Xsd';
     private const XSD_TYPES_CONFIG = __DIR__ . '/../../../resources/config/xsd_types.yaml';
 
     private static CbcTypeResolver $resolver;
