@@ -16,6 +16,8 @@ final readonly class GeneratorConfig
      * @param array<string, string> $typeOverrides
      * @param array<string, string> $classNameOverrides
      * @param array<string, string> $propertyNameOverrides
+     * @param array<string, string> $codelistNameOverrides
+     * @param array<string, string> $codelistBindings
      */
     public function __construct(
         public string $schemaVersion,
@@ -35,7 +37,25 @@ final readonly class GeneratorConfig
         public bool $generateValidation,
         public bool $generateValidatorAttributes,
         public bool $includeGeneratedTag,
+        public ?string $codelistDir = null,
+        public string $codelistNamespace = 'Codelist',
+        public array $codelistNameOverrides = [],
+        public array $codelistBindings = [],
     ) {
+    }
+
+    /**
+     * Look up the codelist listID for a given XSD type+element combination.
+     *
+     * @param string $xsdTypeName   e.g. "TenderingCriterionPropertyType"
+     * @param string $xsdElementName e.g. "TypeCode"
+     * @return string|null The listID if a binding exists, null otherwise
+     */
+    public function getCodelistBinding(string $xsdTypeName, string $xsdElementName): ?string
+    {
+        $key = $xsdTypeName . '.' . $xsdElementName;
+
+        return $this->codelistBindings[$key] ?? null;
     }
 
     /**
@@ -61,6 +81,9 @@ final readonly class GeneratorConfig
         /** @var array{cbc: string, cac: string, doc: string, enum: string} $namespaces */
         $namespaces = $config['namespaces'];
 
+        /** @var array{dir: string|null, namespace: string, name_overrides: array<string, string>, bindings: array<string, string>} $codelists */
+        $codelists = $config['codelists'] ?? [];
+
         return new self(
             schemaVersion: (string) $config['schema_version'],
             schemaDir: isset($config['schema_dir']) ? (string) $config['schema_dir'] : null,
@@ -79,6 +102,10 @@ final readonly class GeneratorConfig
             generateValidation: (bool) $config['generate_validation'],
             generateValidatorAttributes: (bool) $config['generate_validator_attributes'],
             includeGeneratedTag: (bool) $config['include_generated_tag'],
+            codelistDir: isset($codelists['dir']) ? (string) $codelists['dir'] : null,
+            codelistNamespace: (string) ($codelists['namespace'] ?? 'Codelist'),
+            codelistNameOverrides: $codelists['name_overrides'] ?? [],
+            codelistBindings: $codelists['bindings'] ?? [],
         );
     }
 
@@ -128,6 +155,9 @@ final readonly class GeneratorConfig
      */
     public function withOverrides(array $overrides): self
     {
+        /** @var array<string, mixed>|null $codelistOverrides */
+        $codelistOverrides = $overrides['codelists'] ?? null;
+
         return new self(
             schemaVersion: isset($overrides['schema_version']) && is_string($overrides['schema_version'])
                 ? $overrides['schema_version'] : $this->schemaVersion,
@@ -163,6 +193,14 @@ final readonly class GeneratorConfig
                 ? $overrides['generate_validator_attributes'] : $this->generateValidatorAttributes,
             includeGeneratedTag: isset($overrides['include_generated_tag']) && is_bool($overrides['include_generated_tag'])
                 ? $overrides['include_generated_tag'] : $this->includeGeneratedTag,
+            codelistDir: isset($codelistOverrides['dir'])
+                ? (is_string($codelistOverrides['dir']) ? $codelistOverrides['dir'] : null) : $this->codelistDir,
+            codelistNamespace: isset($codelistOverrides['namespace']) && is_string($codelistOverrides['namespace'])
+                ? $codelistOverrides['namespace'] : $this->codelistNamespace,
+            codelistNameOverrides: isset($codelistOverrides['name_overrides']) && is_array($codelistOverrides['name_overrides'])
+                ? $codelistOverrides['name_overrides'] : $this->codelistNameOverrides,
+            codelistBindings: isset($codelistOverrides['bindings']) && is_array($codelistOverrides['bindings'])
+                ? $codelistOverrides['bindings'] : $this->codelistBindings,
         );
     }
 

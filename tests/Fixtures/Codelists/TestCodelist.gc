@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gc:CodeList xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/">
+  <Identification>
+    <ShortName>TestCodelist</ShortName>
+    <LongName>TestCodelist</LongName>
+    <LongName Identifier="listId">test-codelist</LongName>
+    <Version>1.0.0</Version>
+    <CanonicalUri>https://example.com/test</CanonicalUri>
+    <LocationUri>https://example.com/test/TestCodelist.gc</LocationUri>
+    <Agency>
+      <ShortName>TestAgency</ShortName>
+      <Identifier Identifier="TA"/>
+    </Agency>
+  </Identification>
+  <ColumnSet>
+    <Column Id="code" Use="required">
+      <ShortName>Code</ShortName>
+      <Data Type="normalizedString" Lang="eng"/>
+    </Column>
+    <Column Id="Name" Use="optional">
+      <ShortName>Name</ShortName>
+      <Data Type="string" Lang="eng"/>
+    </Column>
+    <Column Id="status" Use="required">
+      <ShortName>Status</ShortName>
+      <Data Type="normalizedString" Lang="eng"/>
+    </Column>
+    <Key Id="codeKey">
+      <ShortName>CodeKey</ShortName>
+      <ColumnRef Ref="code"/>
+    </Key>
+  </ColumnSet>
+  <SimpleCodeList>
+    <Row>
+      <Value ColumnRef="code">
+        <SimpleValue>ALPHA</SimpleValue>
+      </Value>
+      <Value ColumnRef="Name">
+        <SimpleValue>The first item</SimpleValue>
+      </Value>
+      <Value ColumnRef="status">
+        <SimpleValue>ACTIVE</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="code">
+        <SimpleValue>BETA</SimpleValue>
+      </Value>
+      <Value ColumnRef="Name">
+        <SimpleValue>The second item</SimpleValue>
+      </Value>
+      <Value ColumnRef="status">
+        <SimpleValue>ACTIVE</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="code">
+        <SimpleValue>DEPRECATED_ITEM</SimpleValue>
+      </Value>
+      <Value ColumnRef="Name">
+        <SimpleValue>A deprecated entry</SimpleValue>
+      </Value>
+      <Value ColumnRef="status">
+        <SimpleValue>DEPRECATED</SimpleValue>
+      </Value>
+    </Row>
+    <Row>
+      <Value ColumnRef="code">
+        <SimpleValue>gamma-value</SimpleValue>
+      </Value>
+      <Value ColumnRef="Name">
+        <SimpleValue>The third item with special chars</SimpleValue>
+      </Value>
+      <Value ColumnRef="status">
+        <SimpleValue>ACTIVE</SimpleValue>
+      </Value>
+    </Row>
+  </SimpleCodeList>
+</gc:CodeList>

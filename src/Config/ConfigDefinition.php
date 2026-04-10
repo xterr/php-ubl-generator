@@ -55,6 +55,23 @@ final class ConfigDefinition implements ConfigurationInterface
             ->booleanNode('generate_validation')->defaultTrue()->info('Generate setter validation rules')->end()
             ->booleanNode('generate_validator_attributes')->defaultFalse()->info('Generate symfony/validator #[Assert\\*] attributes')->end()
             ->booleanNode('include_generated_tag')->defaultTrue()->info('Include @generated tag in PHPDoc')->end()
+            ->arrayNode('codelists')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('dir')->defaultNull()->info('Path to directory containing .gc (Genericode) codelist files')->end()
+                    ->scalarNode('namespace')->defaultValue('Codelist')->info('Sub-namespace for generated codelist enums')->end()
+                    ->arrayNode('name_overrides')
+                        ->scalarPrototype()->end()
+                        ->defaultValue([])
+                        ->info('Override generated enum class names (listID → class name)')
+                    ->end()
+                    ->arrayNode('bindings')
+                        ->scalarPrototype()->end()
+                        ->defaultValue([])
+                        ->info('Bind codelist enums to properties: "XsdTypeName.XsdElementName" → "listID"')
+                    ->end()
+                ->end()
+            ->end()
         ->end();
 
         return $treeBuilder;

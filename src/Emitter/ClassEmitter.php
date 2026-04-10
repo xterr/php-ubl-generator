@@ -181,16 +181,27 @@ PHP);
 
         $importedTypes = [];
         foreach ($properties as $prop) {
-            $typeToImport = $prop->isArray ? $prop->innerType : $prop->phpType;
-            if ($typeToImport !== null && !$this->isBuiltinType($typeToImport) && !isset($importedTypes[$typeToImport])) {
-                $shortName = $this->shortClassName($typeToImport);
-                $sameNamespace = str_starts_with($typeToImport, $namespaceName . '\\')
-                    && !str_contains(substr($typeToImport, strlen($namespaceName) + 1), '\\');
+            // Import the codelist enum type if bound, otherwise the standard php type
+            $effectiveType = $prop->codelistEnumType ?? ($prop->isArray ? $prop->innerType : $prop->phpType);
+            if ($effectiveType !== null && !$this->isBuiltinType($effectiveType) && !isset($importedTypes[$effectiveType])) {
+                $sameNamespace = str_starts_with($effectiveType, $namespaceName . '\\')
+                    && !str_contains(substr($effectiveType, strlen($namespaceName) + 1), '\\');
                 if ($sameNamespace) {
                     continue;
                 }
-                $importedTypes[$typeToImport] = true;
-                $ns->addUse($typeToImport);
+                $importedTypes[$effectiveType] = true;
+                $ns->addUse($effectiveType);
+            }
+
+            // Also import the original type if different (needed for array inner types when codelist applies)
+            $typeToImport = $prop->isArray ? $prop->innerType : $prop->phpType;
+            if ($typeToImport !== null && $typeToImport !== $effectiveType && !$this->isBuiltinType($typeToImport) && !isset($importedTypes[$typeToImport])) {
+                $sameNamespace = str_starts_with($typeToImport, $namespaceName . '\\')
+                    && !str_contains(substr($typeToImport, strlen($namespaceName) + 1), '\\');
+                if (!$sameNamespace) {
+                    $importedTypes[$typeToImport] = true;
+                    $ns->addUse($typeToImport);
+                }
             }
         }
 
@@ -323,19 +334,22 @@ PHP);
             }
         } else {
             // Scalar / single-object property
+            // When a codelist enum is bound, use it instead of the original CBC type
+            $effectiveType = $prop->codelistEnumType ?? $prop->phpType;
+
             $property = $class->addProperty($prop->phpName)
                 ->setPrivate()
-                ->setType($prop->phpType)
+                ->setType($effectiveType)
                 ->setNullable($prop->isNullable);
             if ($prop->isNullable) {
                 $property->setValue(null);
             }
 
-            if ($withValidatorAttributes) {
+            if ($withValidatorAttributes && $prop->codelistEnumType === null) {
                 if ($prop->required) {
                     $property->addAttribute('Symfony\Component\Validator\Constraints\NotBlank');
                 }
-                if (!$this->isBuiltinType($prop->phpType)) {
+                if (!$this->isBuiltinType($effectiveType)) {
                     $property->addAttribute('Symfony\Component\Validator\Constraints\Valid');
                 }
                 if ($prop->choiceGroup !== null) {
@@ -358,7 +372,7 @@ PHP);
             // Getter
             $getter = $class->addMethod('get' . ucfirst($prop->phpName))
                 ->setPublic()
-                ->setReturnType($prop->phpType)
+                ->setReturnType($effectiveType)
                 ->setReturnNullable($prop->isNullable)
                 ->setBody('return $this->' . $prop->phpName . ';');
 
@@ -367,7 +381,7 @@ PHP);
                 ->setPublic()
                 ->setReturnType('self');
             $setter->addParameter($prop->phpName)
-                ->setType($prop->phpType)
+                ->setType($effectiveType)
                 ->setNullable($prop->isNullable);
             if ($prop->isNullable) {
                 $setter->getParameter($prop->phpName)->setDefaultValue(null);

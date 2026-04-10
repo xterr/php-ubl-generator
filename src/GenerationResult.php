@@ -14,19 +14,26 @@ final readonly class GenerationResult
         public int $cacClassCount,
         public int $docClassCount,
         public int $enumCount,
-        public int $totalFilesWritten,
+        public int $codelistEnumCount = 0,
+        public int $totalFilesWritten = 0,
     ) {}
 
     public function summary(): string
     {
-        return sprintf(
-            'UBL %s: %d CBC classes, %d CAC classes, %d document roots, %d enums, %d total files',
-            $this->schemaVersion,
-            $this->cbcClassCount,
-            $this->cacClassCount,
-            $this->docClassCount,
-            $this->enumCount,
-            $this->totalFilesWritten,
-        );
+        $parts = [
+            sprintf('UBL %s:', $this->schemaVersion),
+            sprintf('%d CBC classes', $this->cbcClassCount),
+            sprintf('%d CAC classes', $this->cacClassCount),
+            sprintf('%d document roots', $this->docClassCount),
+            sprintf('%d enums', $this->enumCount),
+        ];
+
+        if ($this->codelistEnumCount > 0) {
+            $parts[] = sprintf('%d codelist enums', $this->codelistEnumCount);
+        }
+
+        $parts[] = sprintf('%d total files', $this->totalFilesWritten);
+
+        return implode(', ', $parts);
     }
 }

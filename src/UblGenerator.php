@@ -5,8 +5,11 @@ namespace Xterr\UBL\Generator;
 use GoetasWebservices\XML\XSDReader\Schema\Inheritance\RestrictionType;
 use GoetasWebservices\XML\XSDReader\Schema\Type\ComplexType;
 use GoetasWebservices\XML\XSDReader\Schema\Type\Type;
+use Xterr\UBL\Generator\Codelist\GenericodeParser;
+use Xterr\UBL\Generator\Codelist\ParsedCodelist;
 use Xterr\UBL\Generator\Config\GeneratorConfig;
 use Xterr\UBL\Generator\Emitter\ClassEmitter;
+use Xterr\UBL\Generator\Emitter\CodelistEnumEmitter;
 use Xterr\UBL\Generator\Emitter\EnumEmitter;
 use Xterr\UBL\Generator\Emitter\FileWriter;
 use Xterr\UBL\Generator\Emitter\RegistryEmitter;
@@ -28,6 +31,12 @@ final class UblGenerator
     private TypeResolver $typeResolver;
     private NamingResolver $namingResolver;
     private bool $resolved = false;
+
+    /** @var array<string, ParsedCodelist> keyed by listID */
+    private array $parsedCodelists = [];
+
+    /** @var array<string, string> listID → generated FQCN */
+    private array $codelistFqcnMap = [];
 
     public function __construct(GeneratorConfig $config)
     {
@@ -56,6 +65,21 @@ final class UblGenerator
 
         $progress('Resolving CBC leaf types', 0, 0);
         $this->cbcResolver->resolve();
+
+        // Parse codelists if configured
+        if ($this->config->codelistDir !== null) {
+            $progress('Parsing codelist files', 0, 0);
+            $parser = new GenericodeParser();
+            $this->parsedCodelists = $parser->parseDirectory($this->config->codelistDir);
+
+            // Pre-build FQCN map for bindings
+            foreach ($this->parsedCodelists as $listID => $codelist) {
+                $enumName = $this->config->codelistNameOverrides[$listID]
+                    ?? $this->namingResolver->toClassName($codelist->shortName);
+                $this->codelistFqcnMap[$listID] = $this->config->namespace . '\\' . $this->config->codelistNamespace . '\\' . $enumName;
+            }
+        }
+
         $this->resolved = true;
 
         $cacCount = 0;
@@ -88,6 +112,7 @@ final class UblGenerator
         }
 
         $cbcCount = count($this->cbcResolver->leafTypes());
+        $codelistEnumCount = count($this->parsedCodelists);
 
         return new GenerationResult(
             schemaVersion: $this->config->schemaVersion,
@@ -96,7 +121,8 @@ final class UblGenerator
             cacClassCount: $cacCount,
             docClassCount: $docCount,
             enumCount: $enumCount,
-            totalFilesWritten: $cbcCount + $cacCount + $docCount + $enumCount + 2,
+            codelistEnumCount: $codelistEnumCount,
+            totalFilesWritten: $cbcCount + $cacCount + $docCount + $enumCount + $codelistEnumCount + 2,
         );
     }
 
@@ -146,7 +172,7 @@ final class UblGenerator
                     className: $className,
                     xsdTypeName: $typeName,
                     xsdNamespace: XmlNamespace::CAC,
-                    properties: $this->buildPropertiesForComplexType($complexType),
+                    properties: $this->buildPropertiesForComplexType($complexType, $typeName),
                     documentation: $this->extractDocumentation($complexType),
                 ),
             );
@@ -174,7 +200,7 @@ final class UblGenerator
                     className: $className,
                     xsdTypeName: $xsdTypeName,
                     xsdNamespace: $rootNs ?? '',
-                    properties: $this->buildPropertiesForComplexType($type),
+                    properties: $this->buildPropertiesForComplexType($type, $type->getName()),
                     isDocumentRoot: true,
                     rootNamespace: $rootNs,
                     rootLocalName: $rootName,
@@ -206,6 +232,24 @@ final class UblGenerator
             $enumCount++;
         }
 
+        // Emit codelist enums
+        $codelistEnumCount = 0;
+        if ($this->parsedCodelists !== []) {
+            $progress('Emitting codelist enums', 0, 0);
+            $codelistEnumEmitter = new CodelistEnumEmitter($this->config);
+
+            foreach ($this->parsedCodelists as $listID => $codelist) {
+                $enumName = $this->config->codelistNameOverrides[$listID]
+                    ?? $this->namingResolver->toClassName($codelist->shortName);
+
+                $writer->write(
+                    $this->config->codelistNamespace . '/' . $enumName . '.php',
+                    $codelistEnumEmitter->emit($enumName, $codelist),
+                );
+                $codelistEnumCount++;
+            }
+        }
+
         $progress('Emitting registries', 0, 0);
         $typeMapEntries = [];
         foreach ($leafTypes as $leafType) {
@@ -224,18 +268,28 @@ final class UblGenerator
             cacClassCount: $cacCount,
             docClassCount: $docCount,
             enumCount: $enumCount,
-            totalFilesWritten: $cbcCount + $cacCount + $docCount + $enumCount + 2,
+            codelistEnumCount: $codelistEnumCount,
+            totalFilesWritten: $cbcCount + $cacCount + $docCount + $enumCount + $codelistEnumCount + 2,
         );
     }
 
     /** @return list<ResolvedProperty> */
-    private function buildPropertiesForComplexType(ComplexType $complexType): array
+    private function buildPropertiesForComplexType(ComplexType $complexType, ?string $parentTypeName = null): array
     {
         $properties = [];
         foreach ($complexType->getElements() as $element) {
             $resolved = $this->typeResolver->resolveElement($element);
             $phpType = $this->resolvePhpTypeFqcn($resolved);
             $innerType = $resolved->isArray ? $phpType : null;
+
+            // Check for codelist binding
+            $codelistEnumType = null;
+            if ($parentTypeName !== null) {
+                $listID = $this->config->getCodelistBinding($parentTypeName, $resolved->xmlElementName);
+                if ($listID !== null && isset($this->codelistFqcnMap[$listID])) {
+                    $codelistEnumType = $this->codelistFqcnMap[$listID];
+                }
+            }
 
             $properties[] = new ResolvedProperty(
                 phpName: $this->namingResolver->toPropertyName($resolved->xmlElementName, $resolved->isArray),
@@ -248,6 +302,7 @@ final class UblGenerator
                 choiceGroup: $resolved->choiceGroup,
                 documentation: null,
                 required: !$resolved->isNullable,
+                codelistEnumType: $codelistEnumType,
             );
         }
         return $properties;

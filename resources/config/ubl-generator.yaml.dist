@@ -52,3 +52,20 @@ generate_validator_attributes: false
 
 # Include @generated tag in class PHPDoc
 include_generated_tag: true
+
+# Codelist support — generates PHP enums from OASIS Genericode (.gc) files
+codelists:
+  # Path to directory containing .gc (Genericode) codelist files
+  # When set, generates PHP enums from codelists and optionally binds them to properties
+  dir: ~
+
+  # Sub-namespace for generated codelist enums
+  namespace: 'Codelist'
+
+  # Override generated enum class names (listID → class name)
+  name_overrides: {}
+
+  # Bind codelist enums to specific properties
+  # Format: 'XsdTypeName.XsdElementName': 'listID'
+  # Example: { 'TenderingCriterionPropertyType.TypeCode': 'criterion-element-type' }
+  bindings: {}

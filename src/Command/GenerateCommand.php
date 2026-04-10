@@ -25,6 +25,7 @@ final class GenerateCommand extends Command
             ->addOption('schema-version', null, InputOption::VALUE_REQUIRED, 'UBL schema version (2.1, 2.2, 2.3, 2.4) — only used with bundled schemas')
             ->addOption('output-dir', 'o', InputOption::VALUE_REQUIRED, 'Output directory for generated classes')
             ->addOption('namespace', null, InputOption::VALUE_REQUIRED, 'Root PHP namespace')
+            ->addOption('codelist-dir', null, InputOption::VALUE_REQUIRED, 'Path to directory containing .gc codelist files')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Actually generate files (without this, shows dry-run only)');
     }
 
@@ -53,18 +54,26 @@ final class GenerateCommand extends Command
         if ($input->getOption('namespace') !== null) {
             $overrides['namespace'] = $input->getOption('namespace');
         }
+        if ($input->getOption('codelist-dir') !== null) {
+            $overrides['codelists'] = ['dir' => $input->getOption('codelist-dir')];
+        }
         if ($overrides !== []) {
             $config = $config->withOverrides($overrides);
         }
 
         $io->section('Resolved Configuration');
-        $io->definitionList(
+        $configItems = [
             ['Schema Version' => $config->schemaVersion],
             ['Schema Directory' => $config->resolveSchemaDir()],
             ['Output Directory' => $config->outputDir],
             ['Namespace' => $config->namespace],
             ['Validation' => $config->generateValidation ? 'enabled' : 'disabled'],
-        );
+        ];
+        if ($config->codelistDir !== null) {
+            $configItems[] = ['Codelist Directory' => $config->codelistDir];
+            $configItems[] = ['Codelist Namespace' => $config->namespace . '\\' . $config->codelistNamespace];
+        }
+        $io->definitionList(...$configItems);
 
         if (!$input->getOption('force')) {
             $io->warning('Dry-run mode. Use --force to actually generate files.');

@@ -15,5 +15,6 @@ final readonly class ResolvedProperty
         public ?string $choiceGroup,
         public ?string $documentation,
         public bool $required,
+        public ?string $codelistEnumType = null,
     ) {}
 }

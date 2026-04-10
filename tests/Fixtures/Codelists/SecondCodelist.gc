@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gc:CodeList xmlns:gc="http://docs.oasis-open.org/codelist/ns/genericode/1.0/">
+  <Identification>
+    <ShortName>BooleanGUIControl</ShortName>
+    <LongName>BooleanGUIControl</LongName>
+    <LongName Identifier="listId">boolean-gui-control-type</LongName>
+    <Version>2.0.0</Version>
+    <LocationUri>https://example.com/test/BooleanGUIControl.gc</LocationUri>
+    <Agency>
+      <ShortName>TestAgency</ShortName>
+      <Identifier Identifier="TA"/>
+    </Agency>
+  </Identification>
+  <ColumnSet>
+    <Column Id="code" Use="required">
+      <ShortName>Code</ShortName>
+      <Data Type="normalizedString" Lang="eng"/>
+    </Column>
+    <Column Id="Name" Use="optional">
+      <ShortName>Name</ShortName>
+      <Data Type="string" Lang="eng"/>
+    </Column>
+    <Column Id="status" Use="required">
+      <ShortName>Status</ShortName>
+      <Data Type="normalizedString" Lang="eng"/>
+    </Column>
+    <Key Id="codeKey">
+      <ShortName>CodeKey</ShortName>
+      <ColumnRef Ref="code"/>
+    </Key>
+  </ColumnSet>
+  <SimpleCodeList>
+    <Row>
+      <Value ColumnRef="code">
+        <SimpleValue>INDICATOR</SimpleValue>
+      </Value>
+      <Value ColumnRef="Name">
+        <SimpleValue>Boolean indicator</SimpleValue>
+      </Value>
+      <Value ColumnRef="status">
+        <SimpleValue>ACTIVE</SimpleValue>
+      </Value>
+    </Row>
+  </SimpleCodeList>
+</gc:CodeList>
