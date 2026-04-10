@@ -10,7 +10,6 @@ use GoetasWebservices\XML\XSDReader\Schema\Type\SimpleType;
 use GoetasWebservices\XML\XSDReader\Schema\Type\Type;
 use Symfony\Component\Yaml\Yaml;
 use Xterr\UBL\Generator\Xsd\UblTypeRegistry;
-use Xterr\UBL\Xml\Mapping\XmlNamespace;
 
 final class CbcTypeResolver
 {
@@ -45,7 +44,10 @@ final class CbcTypeResolver
 
         $this->resolved = true;
 
-        $cbcElements = $this->registry->globalElementsInNamespace(XmlNamespace::CBC);
+        $cbcElements = [];
+        foreach (UblTypeRegistry::LEAF_ELEMENT_NAMESPACES as $leafNs) {
+            $cbcElements = array_merge($cbcElements, $this->registry->globalElementsInNamespace($leafNs));
+        }
 
         /** @var array<string, list<string>> */
         $elementsByBaseType = [];
@@ -338,7 +340,10 @@ final class CbcTypeResolver
 
     private function resolveBaseTypeNameForElement(string $cbcElementName): string
     {
-        $cbcElements = $this->registry->globalElementsInNamespace(XmlNamespace::CBC);
+        $cbcElements = [];
+        foreach (UblTypeRegistry::LEAF_ELEMENT_NAMESPACES as $leafNs) {
+            $cbcElements = array_merge($cbcElements, $this->registry->globalElementsInNamespace($leafNs));
+        }
 
         foreach ($cbcElements as $element) {
             if ($element->getName() === $cbcElementName) {

@@ -83,14 +83,12 @@ final class UblGenerator
         $this->resolved = true;
 
         $cacCount = 0;
-        foreach ($this->registry->complexTypesInNamespace(XmlNamespace::CAC) as $ct) {
-            if ($ct instanceof ComplexType && $ct->getName() !== null && !$this->isFiltered($ct->getName())) {
-                $cacCount++;
-            }
-        }
-        foreach ($this->registry->complexTypesInNamespace(XmlNamespace::EXT) as $ct) {
-            if ($ct instanceof ComplexType && $ct->getName() !== null && !$this->isFiltered($ct->getName())) {
-                $cacCount++;
+        foreach (UblTypeRegistry::AGGREGATE_TYPE_NAMESPACES as $aggNs) {
+            foreach ($this->registry->complexTypesInNamespace($aggNs) as $ct) {
+                if ($ct instanceof ComplexType && $ct->getName() !== null
+                    && !$this->isFiltered($ct->getName()) && $ct->getElements() !== []) {
+                    $cacCount++;
+                }
             }
         }
 
@@ -161,14 +159,18 @@ final class UblGenerator
             $cbcCount++;
         }
 
-        $progress('Emitting CAC complex classes', 0, 0);
-        foreach ([XmlNamespace::CAC, XmlNamespace::EXT] as $aggregateNs) {
+        $progress('Emitting aggregate complex classes', 0, 0);
+        foreach (UblTypeRegistry::AGGREGATE_TYPE_NAMESPACES as $aggregateNs) {
             foreach ($this->registry->complexTypesInNamespace($aggregateNs) as $complexType) {
                 if (!$complexType instanceof ComplexType) {
                     continue;
                 }
                 $typeName = $complexType->getName();
                 if ($typeName === null || $this->isFiltered($typeName)) {
+                    continue;
+                }
+                // Skip simpleContent types — they are leaf classes emitted in Cbc/
+                if ($complexType->getElements() === []) {
                     continue;
                 }
                 $className = $this->namingResolver->toClassName($typeName);

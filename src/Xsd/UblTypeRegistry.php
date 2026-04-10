@@ -11,6 +11,27 @@ use Xterr\UBL\Xml\Mapping\XmlNamespace;
 
 final class UblTypeRegistry
 {
+    /**
+     * Namespaces whose global elements may define leaf types (value + attributes).
+     * CBC, SBC, and EXT all contain elements with simpleContent extensions of UDT bases.
+     */
+    public const LEAF_ELEMENT_NAMESPACES = [
+        XmlNamespace::CBC,
+        XmlNamespace::SBC,
+        XmlNamespace::EXT,
+    ];
+
+    /**
+     * Namespaces whose complex types define aggregate classes (child elements).
+     * CAC, SAC, SIG, and EXT all contain types with element sequences.
+     */
+    public const AGGREGATE_TYPE_NAMESPACES = [
+        XmlNamespace::CAC,
+        XmlNamespace::SAC,
+        XmlNamespace::SIG,
+        XmlNamespace::EXT,
+    ];
+
     /** @var array<string, list<BaseComplexType>> */
     private array $complexTypes = [];
 
