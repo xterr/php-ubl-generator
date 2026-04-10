@@ -4,7 +4,7 @@ namespace Xterr\UBL\Generator\Resolver;
 
 final class PhpTypeNormalizer
 {
-    private const array SCALAR_TYPES = [
+    private const SCALAR_TYPES = [
         'string', 'int', 'float', 'bool', 'array', 'mixed',
         'void', 'never', 'null', 'true', 'false', 'object',
         'callable', 'iterable', 'self', 'static', 'parent',
