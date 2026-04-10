@@ -264,4 +264,92 @@ final class ClassEmitterTest extends TestCase
         $expectedNs = $config->namespace . '\\' . $config->cbcNamespace;
         self::assertStringContainsString('namespace ' . $expectedNs . ';', $output);
     }
+
+    #[Test]
+    public function emitComplexClassWithSingleCodelistBinding(): void
+    {
+        $defaultConfig = GeneratorConfig::defaults();
+        $enumFqcn = $defaultConfig->namespace . '\\Codelist\\CriterionElementType';
+
+        $properties = [
+            new ResolvedProperty(
+                phpName: 'typeCode',
+                phpType: $defaultConfig->namespace . '\\' . $defaultConfig->cbcNamespace . '\\Code',
+                isNullable: true,
+                isArray: false,
+                xmlElementName: 'TypeCode',
+                xmlNamespace: Ns::CBC,
+                innerType: null,
+                choiceGroup: null,
+                documentation: null,
+                required: false,
+                codelistEnumTypes: [$enumFqcn],
+            ),
+        ];
+
+        $output = $this->emitter->emitComplexClass(
+            className: 'TenderingCriterionProperty',
+            xsdTypeName: 'TenderingCriterionPropertyType',
+            xsdNamespace: Ns::CAC,
+            properties: $properties,
+        );
+
+        self::assertStringContainsString('use Xterr\UBL\Codelist\CriterionElementType;', $output);
+        self::assertStringContainsString('private ?CriterionElementType $typeCode = null', $output);
+        self::assertStringContainsString('function getTypeCode(): ?CriterionElementType', $output);
+        self::assertStringContainsString('function setTypeCode(?CriterionElementType $typeCode = null): self', $output);
+        // Should NOT contain the original Code type
+        self::assertStringNotContainsString('private ?Code $typeCode', $output);
+    }
+
+    #[Test]
+    public function emitComplexClassWithUnionCodelistBinding(): void
+    {
+        $defaultConfig = GeneratorConfig::defaults();
+        $ns = $defaultConfig->namespace . '\\Codelist\\';
+
+        $properties = [
+            new ResolvedProperty(
+                phpName: 'expectedCode',
+                phpType: $defaultConfig->namespace . '\\' . $defaultConfig->cbcNamespace . '\\Code',
+                isNullable: true,
+                isArray: false,
+                xmlElementName: 'ExpectedCode',
+                xmlNamespace: Ns::CBC,
+                innerType: null,
+                choiceGroup: null,
+                documentation: null,
+                required: false,
+                codelistEnumTypes: [
+                    $ns . 'BooleanGUIControl',
+                    $ns . 'FinancialRatio',
+                    $ns . 'OccupationCode',
+                ],
+            ),
+        ];
+
+        $output = $this->emitter->emitComplexClass(
+            className: 'TenderingCriterionProperty',
+            xsdTypeName: 'TenderingCriterionPropertyType',
+            xsdNamespace: Ns::CAC,
+            properties: $properties,
+        );
+
+        // All union types imported
+        self::assertStringContainsString('use Xterr\UBL\Codelist\BooleanGUIControl;', $output);
+        self::assertStringContainsString('use Xterr\UBL\Codelist\FinancialRatio;', $output);
+        self::assertStringContainsString('use Xterr\UBL\Codelist\OccupationCode;', $output);
+
+        // Union type on property
+        self::assertStringContainsString('BooleanGUIControl|FinancialRatio|OccupationCode|null $expectedCode = null', $output);
+
+        // Union type on getter
+        self::assertStringContainsString('function getExpectedCode(): BooleanGUIControl|FinancialRatio|OccupationCode|null', $output);
+
+        // Union type on setter
+        self::assertStringContainsString('function setExpectedCode(BooleanGUIControl|FinancialRatio|OccupationCode|null $expectedCode = null): self', $output);
+
+        // Should NOT contain the original Code type
+        self::assertStringNotContainsString('use Xterr\UBL\Cbc\Code;', $output);
+    }
 }

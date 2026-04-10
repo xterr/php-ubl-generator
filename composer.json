@@ -3,7 +3,7 @@
   "description": "UBL 2.x XSD-to-PHP 8.4+ code generator — produces typed classes with XML mapping attributes from OASIS XSD schemas",
   "license": "MIT",
   "type": "library",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "keywords": [
     "ubl",
     "xml",

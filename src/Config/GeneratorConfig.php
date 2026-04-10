@@ -17,7 +17,7 @@ final readonly class GeneratorConfig
      * @param array<string, string> $classNameOverrides
      * @param array<string, string> $propertyNameOverrides
      * @param array<string, string> $codelistNameOverrides
-     * @param array<string, string> $codelistBindings
+     * @param array<string, string|list<string>> $codelistBindings
      */
     public function __construct(
         public string $schemaVersion,
@@ -45,13 +45,13 @@ final readonly class GeneratorConfig
     }
 
     /**
-     * Look up the codelist listID for a given XSD type+element combination.
+     * Look up the codelist listID(s) for a given XSD type+element combination.
      *
      * @param string $xsdTypeName   e.g. "TenderingCriterionPropertyType"
      * @param string $xsdElementName e.g. "TypeCode"
-     * @return string|null The listID if a binding exists, null otherwise
+     * @return string|list<string>|null Single listID, array of listIDs for union types, or null
      */
-    public function getCodelistBinding(string $xsdTypeName, string $xsdElementName): ?string
+    public function getCodelistBinding(string $xsdTypeName, string $xsdElementName): string|array|null
     {
         $key = $xsdTypeName . '.' . $xsdElementName;
 
@@ -81,7 +81,7 @@ final readonly class GeneratorConfig
         /** @var array{cbc: string, cac: string, doc: string, enum: string} $namespaces */
         $namespaces = $config['namespaces'];
 
-        /** @var array{dir: string|null, namespace: string, name_overrides: array<string, string>, bindings: array<string, string>} $codelists */
+        /** @var array{dir: string|null, namespace: string, name_overrides: array<string, string>, bindings: array<string, string|list<string>>} $codelists */
         $codelists = $config['codelists'] ?? [];
 
         return new self(

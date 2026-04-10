@@ -15,6 +15,7 @@ final readonly class ResolvedProperty
         public ?string $choiceGroup,
         public ?string $documentation,
         public bool $required,
-        public ?string $codelistEnumType = null,
+        /** @var list<string>|null FQCNs of codelist enums, null if no binding */
+        public ?array $codelistEnumTypes = null,
     ) {}
 }

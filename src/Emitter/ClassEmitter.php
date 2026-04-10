@@ -181,21 +181,27 @@ PHP);
 
         $importedTypes = [];
         foreach ($properties as $prop) {
-            // Import the codelist enum type if bound, otherwise the standard php type
-            $effectiveType = $prop->codelistEnumType ?? ($prop->isArray ? $prop->innerType : $prop->phpType);
-            if ($effectiveType !== null && !$this->isBuiltinType($effectiveType) && !isset($importedTypes[$effectiveType])) {
-                $sameNamespace = str_starts_with($effectiveType, $namespaceName . '\\')
-                    && !str_contains(substr($effectiveType, strlen($namespaceName) + 1), '\\');
-                if ($sameNamespace) {
-                    continue;
+            // Import codelist enum types if bound (single or union)
+            if ($prop->codelistEnumTypes !== null) {
+                foreach ($prop->codelistEnumTypes as $enumFqcn) {
+                    if (!isset($importedTypes[$enumFqcn])) {
+                        $sameNamespace = str_starts_with($enumFqcn, $namespaceName . '\\')
+                            && !str_contains(substr($enumFqcn, strlen($namespaceName) + 1), '\\');
+                        if (!$sameNamespace) {
+                            $importedTypes[$enumFqcn] = true;
+                            $ns->addUse($enumFqcn);
+                        }
+                    }
                 }
-                $importedTypes[$effectiveType] = true;
-                $ns->addUse($effectiveType);
             }
 
-            // Also import the original type if different (needed for array inner types when codelist applies)
+            // Import the standard php type (skip when codelist enums replace it)
             $typeToImport = $prop->isArray ? $prop->innerType : $prop->phpType;
-            if ($typeToImport !== null && $typeToImport !== $effectiveType && !$this->isBuiltinType($typeToImport) && !isset($importedTypes[$typeToImport])) {
+            if ($prop->codelistEnumTypes !== null && !$prop->isArray) {
+                // Codelist enums replace the original type — don't import it
+                $typeToImport = null;
+            }
+            if ($typeToImport !== null && !$this->isBuiltinType($typeToImport) && !isset($importedTypes[$typeToImport])) {
                 $sameNamespace = str_starts_with($typeToImport, $namespaceName . '\\')
                     && !str_contains(substr($typeToImport, strlen($namespaceName) + 1), '\\');
                 if (!$sameNamespace) {
@@ -334,62 +340,110 @@ PHP);
             }
         } else {
             // Scalar / single-object property
-            // When a codelist enum is bound, use it instead of the original CBC type
-            $effectiveType = $prop->codelistEnumType ?? $prop->phpType;
+            // Determine effective type: union enums, single enum, or original type
+            $isUnionEnum = $prop->codelistEnumTypes !== null && \count($prop->codelistEnumTypes) > 1;
+            $isSingleEnum = $prop->codelistEnumTypes !== null && \count($prop->codelistEnumTypes) === 1;
 
-            $property = $class->addProperty($prop->phpName)
-                ->setPrivate()
-                ->setType($effectiveType)
-                ->setNullable($prop->isNullable);
-            if ($prop->isNullable) {
-                $property->setValue(null);
-            }
+            if ($isUnionEnum) {
+                // Union type: Foo|Bar|null
+                $unionFqcns = $prop->codelistEnumTypes;
+                $unionType = implode('|', $unionFqcns);
 
-            if ($withValidatorAttributes && $prop->codelistEnumType === null) {
+                $property = $class->addProperty($prop->phpName)
+                    ->setPrivate()
+                    ->setType($unionType)
+                    ->setNullable(true)
+                    ->setValue(null);
+
+                $xmlElementArgs = [
+                    'name' => $prop->xmlElementName,
+                    'namespace' => $nsLiteral,
+                ];
                 if ($prop->required) {
-                    $property->addAttribute('Symfony\Component\Validator\Constraints\NotBlank');
-                }
-                if (!$this->isBuiltinType($effectiveType)) {
-                    $property->addAttribute('Symfony\Component\Validator\Constraints\Valid');
+                    $xmlElementArgs['required'] = true;
                 }
                 if ($prop->choiceGroup !== null) {
-                    $property->addAttribute(\Xterr\UBL\Validation\ChoiceGroupConstraint::class, ['group' => $prop->choiceGroup]);
+                    $xmlElementArgs['choiceGroup'] = $prop->choiceGroup;
                 }
-            }
+                $property->addAttribute(XmlElement::class, $xmlElementArgs);
 
-            $xmlElementArgs = [
-                'name' => $prop->xmlElementName,
-                'namespace' => $nsLiteral,
-            ];
-            if ($prop->required) {
-                $xmlElementArgs['required'] = true;
-            }
-            if ($prop->choiceGroup !== null) {
-                $xmlElementArgs['choiceGroup'] = $prop->choiceGroup;
-            }
-            $property->addAttribute(XmlElement::class, $xmlElementArgs);
+                // Getter
+                $class->addMethod('get' . ucfirst($prop->phpName))
+                    ->setPublic()
+                    ->setReturnType($unionType)
+                    ->setReturnNullable(true)
+                    ->setBody('return $this->' . $prop->phpName . ';');
 
-            // Getter
-            $getter = $class->addMethod('get' . ucfirst($prop->phpName))
-                ->setPublic()
-                ->setReturnType($effectiveType)
-                ->setReturnNullable($prop->isNullable)
-                ->setBody('return $this->' . $prop->phpName . ';');
+                // Setter
+                $setter = $class->addMethod('set' . ucfirst($prop->phpName))
+                    ->setPublic()
+                    ->setReturnType('self');
+                $setter->addParameter($prop->phpName)
+                    ->setType($unionType)
+                    ->setNullable(true)
+                    ->setDefaultValue(null);
+                $setter->setBody(
+                    '$this->' . $prop->phpName . ' = $' . $prop->phpName . ';' . "\n"
+                    . 'return $this;'
+                );
+            } else {
+                // Single enum or standard type
+                $effectiveType = $isSingleEnum ? $prop->codelistEnumTypes[0] : $prop->phpType;
 
-            // Setter
-            $setter = $class->addMethod('set' . ucfirst($prop->phpName))
-                ->setPublic()
-                ->setReturnType('self');
-            $setter->addParameter($prop->phpName)
-                ->setType($effectiveType)
-                ->setNullable($prop->isNullable);
-            if ($prop->isNullable) {
-                $setter->getParameter($prop->phpName)->setDefaultValue(null);
+                $property = $class->addProperty($prop->phpName)
+                    ->setPrivate()
+                    ->setType($effectiveType)
+                    ->setNullable($prop->isNullable);
+                if ($prop->isNullable) {
+                    $property->setValue(null);
+                }
+
+                if ($withValidatorAttributes && $prop->codelistEnumTypes === null) {
+                    if ($prop->required) {
+                        $property->addAttribute('Symfony\Component\Validator\Constraints\NotBlank');
+                    }
+                    if (!$this->isBuiltinType($effectiveType)) {
+                        $property->addAttribute('Symfony\Component\Validator\Constraints\Valid');
+                    }
+                    if ($prop->choiceGroup !== null) {
+                        $property->addAttribute(\Xterr\UBL\Validation\ChoiceGroupConstraint::class, ['group' => $prop->choiceGroup]);
+                    }
+                }
+
+                $xmlElementArgs = [
+                    'name' => $prop->xmlElementName,
+                    'namespace' => $nsLiteral,
+                ];
+                if ($prop->required) {
+                    $xmlElementArgs['required'] = true;
+                }
+                if ($prop->choiceGroup !== null) {
+                    $xmlElementArgs['choiceGroup'] = $prop->choiceGroup;
+                }
+                $property->addAttribute(XmlElement::class, $xmlElementArgs);
+
+                // Getter
+                $class->addMethod('get' . ucfirst($prop->phpName))
+                    ->setPublic()
+                    ->setReturnType($effectiveType)
+                    ->setReturnNullable($prop->isNullable)
+                    ->setBody('return $this->' . $prop->phpName . ';');
+
+                // Setter
+                $setter = $class->addMethod('set' . ucfirst($prop->phpName))
+                    ->setPublic()
+                    ->setReturnType('self');
+                $setter->addParameter($prop->phpName)
+                    ->setType($effectiveType)
+                    ->setNullable($prop->isNullable);
+                if ($prop->isNullable) {
+                    $setter->getParameter($prop->phpName)->setDefaultValue(null);
+                }
+                $setter->setBody(
+                    '$this->' . $prop->phpName . ' = $' . $prop->phpName . ';' . "\n"
+                    . 'return $this;'
+                );
             }
-            $setter->setBody(
-                '$this->' . $prop->phpName . ' = $' . $prop->phpName . ';' . "\n"
-                . 'return $this;'
-            );
         }
     }
 

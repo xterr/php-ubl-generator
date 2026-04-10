@@ -66,6 +66,11 @@ codelists:
   name_overrides: {}
 
   # Bind codelist enums to specific properties
-  # Format: 'XsdTypeName.XsdElementName': 'listID'
-  # Example: { 'TenderingCriterionPropertyType.TypeCode': 'criterion-element-type' }
+  # Format: 'XsdTypeName.XsdElementName': 'listID'          (single codelist)
+  #     or: 'XsdTypeName.XsdElementName': ['id1', 'id2']    (union — multiple codelists)
+  # Example:
+  #   'TenderingCriterionPropertyType.TypeCode': 'criterion-element-type'
+  #   'TenderingCriterionPropertyType.ExpectedCode':
+  #     - 'boolean-gui-control-type'
+  #     - 'financial-ratio-type'
   bindings: {}

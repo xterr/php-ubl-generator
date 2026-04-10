@@ -88,6 +88,11 @@ final class UblGenerator
                 $cacCount++;
             }
         }
+        foreach ($this->registry->complexTypesInNamespace(XmlNamespace::EXT) as $ct) {
+            if ($ct instanceof ComplexType && $ct->getName() !== null && !$this->isFiltered($ct->getName())) {
+                $cacCount++;
+            }
+        }
 
         $docCount = 0;
         foreach ($this->registry->documentRootElements() as $root) {
@@ -157,26 +162,28 @@ final class UblGenerator
         }
 
         $progress('Emitting CAC complex classes', 0, 0);
-        foreach ($this->registry->complexTypesInNamespace(XmlNamespace::CAC) as $complexType) {
-            if (!$complexType instanceof ComplexType) {
-                continue;
+        foreach ([XmlNamespace::CAC, XmlNamespace::EXT] as $aggregateNs) {
+            foreach ($this->registry->complexTypesInNamespace($aggregateNs) as $complexType) {
+                if (!$complexType instanceof ComplexType) {
+                    continue;
+                }
+                $typeName = $complexType->getName();
+                if ($typeName === null || $this->isFiltered($typeName)) {
+                    continue;
+                }
+                $className = $this->namingResolver->toClassName($typeName);
+                $writer->write(
+                    $this->config->cacNamespace . '/' . $className . '.php',
+                    $classEmitter->emitComplexClass(
+                        className: $className,
+                        xsdTypeName: $typeName,
+                        xsdNamespace: $aggregateNs,
+                        properties: $this->buildPropertiesForComplexType($complexType, $typeName),
+                        documentation: $this->extractDocumentation($complexType),
+                    ),
+                );
+                $cacCount++;
             }
-            $typeName = $complexType->getName();
-            if ($typeName === null || $this->isFiltered($typeName)) {
-                continue;
-            }
-            $className = $this->namingResolver->toClassName($typeName);
-            $writer->write(
-                $this->config->cacNamespace . '/' . $className . '.php',
-                $classEmitter->emitComplexClass(
-                    className: $className,
-                    xsdTypeName: $typeName,
-                    xsdNamespace: XmlNamespace::CAC,
-                    properties: $this->buildPropertiesForComplexType($complexType, $typeName),
-                    documentation: $this->extractDocumentation($complexType),
-                ),
-            );
-            $cacCount++;
         }
 
         $progress('Emitting document root classes', 0, 0);
@@ -282,12 +289,21 @@ final class UblGenerator
             $phpType = $this->resolvePhpTypeFqcn($resolved);
             $innerType = $resolved->isArray ? $phpType : null;
 
-            // Check for codelist binding
-            $codelistEnumType = null;
+            // Check for codelist binding (single or union)
+            $codelistEnumTypes = null;
             if ($parentTypeName !== null) {
-                $listID = $this->config->getCodelistBinding($parentTypeName, $resolved->xmlElementName);
-                if ($listID !== null && isset($this->codelistFqcnMap[$listID])) {
-                    $codelistEnumType = $this->codelistFqcnMap[$listID];
+                $binding = $this->config->getCodelistBinding($parentTypeName, $resolved->xmlElementName);
+                if ($binding !== null) {
+                    $listIDs = \is_array($binding) ? $binding : [$binding];
+                    $resolvedTypes = [];
+                    foreach ($listIDs as $listID) {
+                        if (isset($this->codelistFqcnMap[$listID])) {
+                            $resolvedTypes[] = $this->codelistFqcnMap[$listID];
+                        }
+                    }
+                    if ($resolvedTypes !== []) {
+                        $codelistEnumTypes = $resolvedTypes;
+                    }
                 }
             }
 
@@ -302,7 +318,7 @@ final class UblGenerator
                 choiceGroup: $resolved->choiceGroup,
                 documentation: null,
                 required: !$resolved->isNullable,
-                codelistEnumType: $codelistEnumType,
+                codelistEnumTypes: $codelistEnumTypes,
             );
         }
         return $properties;
