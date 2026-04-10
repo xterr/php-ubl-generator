@@ -5,14 +5,13 @@ namespace Xterr\UBL\Generator\Tests\Unit\Resolver;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xterr\UBL\Generator\Resolver\CbcTypeResolver;
-use Xterr\UBL\Generator\Resolver\ResolvedLeafType;
 use Xterr\UBL\Generator\Xsd\SchemaLoader;
 use Xterr\UBL\Generator\Xsd\UblTypeRegistry;
 
 final class CbcTypeResolverTest extends TestCase
 {
-    private const string XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
-    private const string XSD_TYPES_CONFIG = __DIR__ . '/../../../resources/config/xsd_types.yaml';
+    private const XSD_DIR = __DIR__ . '/../../../resources/schemas/2.4/xsd';
+    private const XSD_TYPES_CONFIG = __DIR__ . '/../../../resources/config/xsd_types.yaml';
 
     private static CbcTypeResolver $resolver;
 
